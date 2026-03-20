@@ -423,12 +423,9 @@ main {
 }
 
 .contact-info :is(.contact-link, time, address) {
-  --fs-7: 13px;              /* 1. ปรับขนาดจาก 14px เป็น 13px (หรือ 12px ถ้ายังล้น) */
-  font-size: var(--fs-7);    /* มั่นใจว่ามีการนำตัวแปรไปใช้งาน */
-  font-weight: var(--fw-300);
-  word-break: break-all;     /* 2. สั่งให้ตัดขึ้นบรรทัดใหม่เมื่อข้อความยาวเกินพื้นที่ */
-  line-height: 1.4;          /* 3. เพิ่มระยะห่างระหว่างบรรทัดเล็กน้อยให้อ่านง่ายขึ้น */
-}
+    --fs-7: 14px;
+    font-weight: var(--fw-300);
+  }
 
 .contact-info address { font-style: normal; }
 
