@@ -43,8 +43,9 @@
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease-out, transform .6s ease-out; }
   .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-  .mobile-nav { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
-  .mobile-nav.open { max-height: 400px; }
+  /* ซ่อน scrollbar สำหรับเมนูแนวนอนบนมือถือ */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
   #toast-container { position: fixed; top: 1.25rem; right: 1.25rem; left: 1.25rem; z-index: 9999; display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; }
   .toast { animation: slideIn .3s ease-out, fadeOutToast .3s ease-in 2.7s forwards; max-width: 320px; }
@@ -67,7 +68,6 @@
   @media print {
     aside, nav, #backToTop, .no-print, #toast-container { display: none !important; }
     body { background: #fff !important; color: #000 !important; }
-    .page-section { display: block !important; }
   }
 </style>
 </head>
@@ -95,6 +95,9 @@
     </div>
   </div>
 </div>
+
+<!-- Container ที่ซ่อนไว้สำหรับโหลดไฟล์ PDF เพื่อสั่งพิมพ์ -->
+<div id="printFrameContainer" style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true"></div>
 
 <main class="max-w-6xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
 
@@ -167,9 +170,9 @@
         <ion-icon name="download-outline" class="text-2xl"></ion-icon>
         <span>Download Resume</span>
       </a>
-      <button id="printBtn" type="button" class="w-full flex items-center justify-center gap-3 bg-slate-800 border border-slate-700 text-slate-200 py-3 rounded-xl text-sm font-semibold hover:border-tech-accent hover:text-tech-accent transition-all">
-        <ion-icon name="print-outline" class="text-xl"></ion-icon>
-        <span>Print Resume</span>
+      <button id="printBtn" type="button" class="w-full flex items-center justify-center gap-3 bg-slate-800 border border-slate-700 text-slate-200 py-3 rounded-xl text-sm font-semibold hover:border-tech-accent hover:text-tech-accent transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+        <ion-icon name="print-outline" id="printIcon" class="text-xl"></ion-icon>
+        <span id="printBtnText">Print Resume</span>
       </button>
     </div>
   </aside>
@@ -177,24 +180,13 @@
   <!-- ================= MAIN CONTENT ================= -->
   <div class="bg-tech-card rounded-3xl shadow-2xl border border-slate-700/50 lg:col-span-3 overflow-hidden relative">
 
-    <nav class="bg-slate-800/80 border-b border-slate-700 px-4 md:px-8 py-4 md:py-5 backdrop-blur-md sticky top-0 z-30">
-      <div class="flex items-center justify-between">
-        <span class="font-semibold text-white text-lg lg:hidden">Menu</span>
-        <ul class="hidden lg:flex gap-8 text-sm font-medium">
-          <li><button class="nav-btn text-tech-accent border-b-2 border-tech-accent pb-1 transition-colors focus:outline-none" data-target="about">About</button></li>
-          <li><button class="nav-btn text-slate-400 hover:text-white pb-1 transition-colors focus:outline-none" data-target="resume">Resume</button></li>
-          <li><button class="nav-btn text-slate-400 hover:text-white pb-1 transition-colors focus:outline-none" data-target="portfolio">Portfolio</button></li>
-          <li><button class="nav-btn text-slate-400 hover:text-white pb-1 transition-colors focus:outline-none" data-target="contact">Contact</button></li>
-        </ul>
-        <button id="hamburgerBtn" aria-label="เปิดเมนู" aria-expanded="false" class="lg:hidden w-10 h-10 rounded-lg bg-slate-700 text-white flex items-center justify-center">
-          <ion-icon name="menu-outline" id="hamburgerIcon" class="text-2xl"></ion-icon>
-        </button>
-      </div>
-      <ul id="mobileNav" class="mobile-nav lg:hidden flex flex-col gap-2 mt-4 text-sm font-medium">
-        <li><button class="nav-btn w-full text-left px-4 py-3 rounded-lg bg-slate-900 text-tech-accent transition-colors" data-target="about">About</button></li>
-        <li><button class="nav-btn w-full text-left px-4 py-3 rounded-lg bg-slate-900 text-slate-300 transition-colors" data-target="resume">Resume</button></li>
-        <li><button class="nav-btn w-full text-left px-4 py-3 rounded-lg bg-slate-900 text-slate-300 transition-colors" data-target="portfolio">Portfolio</button></li>
-        <li><button class="nav-btn w-full text-left px-4 py-3 rounded-lg bg-slate-900 text-slate-300 transition-colors" data-target="contact">Contact</button></li>
+    <!-- Navbar: เมนูแนวนอนเดียวกันทั้ง Desktop และ Mobile (เลื่อนได้บนจอเล็ก) -->
+    <nav class="bg-slate-800/80 border-b border-slate-700 px-4 md:px-8 py-4 backdrop-blur-md sticky top-0 z-30">
+      <ul class="flex gap-4 md:gap-8 text-sm font-medium overflow-x-auto no-scrollbar whitespace-nowrap">
+        <li><button class="nav-btn text-tech-accent border-b-2 border-tech-accent pb-1 transition-colors focus:outline-none" data-target="about">About</button></li>
+        <li><button class="nav-btn text-slate-400 hover:text-white border-b-2 border-transparent pb-1 transition-colors focus:outline-none" data-target="resume">Resume</button></li>
+        <li><button class="nav-btn text-slate-400 hover:text-white border-b-2 border-transparent pb-1 transition-colors focus:outline-none" data-target="portfolio">Portfolio</button></li>
+        <li><button class="nav-btn text-slate-400 hover:text-white border-b-2 border-transparent pb-1 transition-colors focus:outline-none" data-target="contact">Contact</button></li>
       </ul>
     </nav>
 
@@ -523,43 +515,35 @@
     /* ============ 1. TAB NAVIGATION ============ */
     const navBtns = document.querySelectorAll('.nav-btn');
     const pageSections = document.querySelectorAll('.page-section');
-    const mobileNav = document.getElementById('mobileNav');
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    const hamburgerIcon = document.getElementById('hamburgerIcon');
 
     function activateSection(targetId) {
-      // Reset ทุกปุ่ม
       navBtns.forEach(b => {
-        b.classList.remove('text-tech-accent', 'border-b-2', 'border-tech-accent', 'bg-slate-900');
-        b.classList.add('text-slate-400');
+        b.classList.remove('text-tech-accent', 'border-tech-accent');
+        b.classList.add('text-slate-400', 'border-transparent');
       });
-      // Active ปุ่มที่ตรงกับ target ทั้ง desktop และ mobile
       navBtns.forEach(b => {
         if (b.getAttribute('data-target') === targetId) {
-          b.classList.remove('text-slate-400');
-          b.classList.add('text-tech-accent');
-          if (window.innerWidth >= 1024) {
-            b.classList.add('border-b-2', 'border-tech-accent');
-          }
+          b.classList.remove('text-slate-400', 'border-transparent');
+          b.classList.add('text-tech-accent', 'border-tech-accent');
         }
       });
-      // สลับ section
+
       pageSections.forEach(s => s.classList.remove('active'));
       const target = document.getElementById(targetId);
-      if (target) target.classList.add('active');
+      if (!target) return;
+      target.classList.add('active');
 
       // รีเซ็ต reveal animation ใน section ใหม่
       target.querySelectorAll('.reveal').forEach(el => {
         el.classList.remove('in-view');
         revealObserver.observe(el);
       });
-      // Trigger skill bar animation ถ้าเป็น resume
+
       if (targetId === 'resume') animateSkillBars();
       if (targetId === 'about') animateCounters();
 
       if (window.innerWidth < 1024) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        closeMobileNav();
       }
     }
 
@@ -569,19 +553,7 @@
       });
     });
 
-    /* ============ 2. MOBILE HAMBURGER MENU ============ */
-    function closeMobileNav() {
-      mobileNav.classList.remove('open');
-      hamburgerBtn.setAttribute('aria-expanded', 'false');
-      hamburgerIcon.setAttribute('name', 'menu-outline');
-    }
-    hamburgerBtn.addEventListener('click', () => {
-      const isOpen = mobileNav.classList.toggle('open');
-      hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
-      hamburgerIcon.setAttribute('name', isOpen ? 'close-outline' : 'menu-outline');
-    });
-
-    /* ============ 3. TYPING EFFECT ============ */
+    /* ============ 2. TYPING EFFECT ============ */
     const roles = ['System Security Engineer', 'Network Administrator', 'Virtualization Specialist', 'Automation Enthusiast'];
     const typingEl = document.getElementById('typingText');
     let roleIndex = 0, charIndex = 0, deleting = false;
@@ -608,14 +580,12 @@
     }
     typeLoop();
 
-    /* ============ 4. SKILL BAR ANIMATION ============ */
+    /* ============ 3. SKILL BAR ANIMATION ============ */
     function animateSkillBars() {
-      document.querySelectorAll('#resume .skill-bar-fill').forEach(bar => {
-        bar.classList.add('animated');
-      });
+      document.querySelectorAll('#resume .skill-bar-fill').forEach(bar => bar.classList.add('animated'));
     }
 
-    /* ============ 5. STATS COUNTER ANIMATION ============ */
+    /* ============ 4. STATS COUNTER ANIMATION ============ */
     let countersAnimated = false;
     function animateCounters() {
       if (countersAnimated) return;
@@ -638,10 +608,9 @@
         }, stepTime);
       });
     }
-    // Trigger ครั้งแรกเพราะ About เป็น section เริ่มต้น
-    setTimeout(animateCounters, 300);
+    setTimeout(animateCounters, 300); // Trigger ครั้งแรกเพราะ About เป็น section เริ่มต้น
 
-    /* ============ 6. FADE-UP REVEAL ON SCROLL ============ */
+    /* ============ 5. FADE-UP REVEAL ON SCROLL ============ */
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -650,10 +619,9 @@
         }
       });
     }, { threshold: 0.15 });
-
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    /* ============ 7. PORTFOLIO MODAL ============ */
+    /* ============ 6. PORTFOLIO MODAL ============ */
     const modal = document.getElementById('portfolioModal');
     const modalImg = document.getElementById('modalImg');
     const modalTitle = document.getElementById('modalTitle');
@@ -689,7 +657,7 @@
     document.querySelectorAll('[data-close-modal]').forEach(el => el.addEventListener('click', closeModal));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-    /* ============ 8. TOAST NOTIFICATION ============ */
+    /* ============ 7. TOAST NOTIFICATION ============ */
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -697,12 +665,12 @@
       const icon = type === 'success' ? 'checkmark-circle-outline' : 'alert-circle-outline';
       toast.className = `toast ${bgColor} text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm font-medium`;
       toast.innerHTML = `<ion-icon name="${icon}" class="text-xl"></ion-icon><span></span>`;
-      toast.querySelector('span').textContent = message; // ป้องกัน XSS ด้วยการใช้ textContent
+      toast.querySelector('span').textContent = message; // ใช้ textContent ป้องกัน XSS
       container.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     }
 
-    /* ============ 9. CONTACT FORM VALIDATION ============ */
+    /* ============ 8. CONTACT FORM VALIDATION ============ */
     const contactForm = document.getElementById('contactForm');
     const submitBtn = document.getElementById('submitBtn');
 
@@ -721,7 +689,7 @@
     }
 
     contactForm.addEventListener('submit', (e) => {
-      e.preventDefault(); // ป้องกันการส่งฟอร์มออกไปจริง (sandbox safety)
+      e.preventDefault(); // ป้องกันการส่งฟอร์มออกไปจริงตามข้อจำกัดความปลอดภัยของแซนด์บ็อกซ์
 
       const fullname = document.getElementById('fullname').value.trim();
       const email = document.getElementById('email').value.trim();
@@ -733,10 +701,8 @@
       const validMessage = validateField('message', message.length > 0);
 
       if (validName && validEmail && validMessage) {
-        // จำลองการส่งข้อมูล (ไม่มีการเรียก API ภายนอกใด ๆ ตามข้อจำกัดความปลอดภัย)
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<ion-icon name="hourglass-outline" class="text-lg"></ion-icon><span>กำลังส่ง...</span>';
-
         setTimeout(() => {
           showToast('ส่งข้อความสำเร็จ! ขอบคุณที่ติดต่อมา', 'success');
           contactForm.reset();
@@ -748,23 +714,70 @@
       }
     });
 
-    /* ============ 10. BACK TO TOP BUTTON ============ */
+    /* ============ 9. BACK TO TOP ============ */
     const backToTopBtn = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        backToTopBtn.classList.remove('hidden-btn');
-      } else {
-        backToTopBtn.classList.add('hidden-btn');
-      }
+      if (window.scrollY > 300) backToTopBtn.classList.remove('hidden-btn');
+      else backToTopBtn.classList.add('hidden-btn');
     });
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    /* ============ 11. PRINT RESUME ============ */
-    document.getElementById('printBtn').addEventListener('click', () => {
-      activateSection('resume');
-      setTimeout(() => window.print(), 200);
+    /* ============ 10. PRINT RESUME PDF (โหลดไฟล์ PDF จริงมาสั่งพิมพ์) ============ */
+    const printBtn = document.getElementById('printBtn');
+    const printBtnText = document.getElementById('printBtnText');
+    const printIcon = document.getElementById('printIcon');
+    const printFrameContainer = document.getElementById('printFrameContainer');
+    const RESUME_PDF_PATH = './assets/docs/Rachod_Medacha_Resume.pdf';
+
+    printBtn.addEventListener('click', () => {
+      printBtn.disabled = true;
+      printIcon.setAttribute('name', 'hourglass-outline');
+      printBtnText.textContent = 'กำลังโหลด PDF...';
+
+      // สร้าง iframe ใหม่ทุกครั้งเพื่อโหลดไฟล์ PDF สด ๆ
+      printFrameContainer.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('title', 'Resume PDF for printing');
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = 'none';
+
+      let printed = false;
+      const timeoutId = setTimeout(() => {
+        if (!printed) {
+          resetPrintButton();
+          showToast('ไม่พบไฟล์ PDF หรือโหลดไม่สำเร็จ กรุณาตรวจสอบไฟล์ resume', 'error');
+          printFrameContainer.innerHTML = '';
+        }
+      }, 6000);
+
+      iframe.onload = () => {
+        printed = true;
+        clearTimeout(timeoutId);
+        try {
+          // สั่งพิมพ์ไฟล์ PDF ที่โหลดอยู่ใน iframe (แทนที่จะพิมพ์หน้าเว็บ)
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        } catch (err) {
+          showToast('เบราว์เซอร์ไม่รองรับการพิมพ์ PDF ในรูปแบบนี้ กรุณาดาวน์โหลดไฟล์แทน', 'error');
+        }
+        resetPrintButton();
+      };
+
+      iframe.onerror = () => {
+        clearTimeout(timeoutId);
+        resetPrintButton();
+        showToast('ไม่พบไฟล์ PDF กรุณาตรวจสอบพาธไฟล์', 'error');
+      };
+
+      function resetPrintButton() {
+        printBtn.disabled = false;
+        printIcon.setAttribute('name', 'print-outline');
+        printBtnText.textContent = 'Print Resume';
+      }
+
+      iframe.src = RESUME_PDF_PATH;
+      printFrameContainer.appendChild(iframe);
     });
 
   });
