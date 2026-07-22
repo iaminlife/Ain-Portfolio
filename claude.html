@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rachod Medacha - System Security Engineer Portfolio">
+  <title>Rachod Medacha - System Security Engineer</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'Noto Sans Thai', 'sans-serif'],
+          },
+          colors: {
+            tech: {
+              dark: '#0f172a',
+              card: '#1e293b',
+              accent: '#38bdf8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Ionicons -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    html { scroll-behavior: smooth; }
+
+    /* Hide inactive sections smoothly */
+    .page-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+    .page-section.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Skill bar animation */
+    .skill-bar-fill { width: 0% !important; transition: width 1.2s ease-out; }
+    .skill-bar-fill.animated { width: var(--target-width) !important; }
+
+    /* Fade-up on scroll */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+    /* Mobile nav */
+    .mobile-nav { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .mobile-nav.open { max-height: 400px; }
+
+    /* Toast */
+    #toast-container { position: fixed; top: 1.25rem; right: 1.25rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
+    .toast {
+      animation: slideIn 0.3s ease-out, fadeOutToast 0.3s ease-in 2.7s forwards;
+    }
+    @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOutToast { to { opacity: 0; transform: translateX(30px); } }
+
+    /* Modal */
+    .modal-overlay { transition: opacity 0.3s ease; }
+    .modal-content { transition: transform 0.3s ease, opacity 0.3s ease; }
+
+    /* Back to top */
+    #backToTop { transition: opacity 0.3s ease, transform 0.3s ease; }
+    #backToTop.hidden-btn { opacity: 0; transform: translateY(20px); pointer-events: none; }
+
+    /* Typing cursor */
+    .cursor-blink { animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Print styles */
+    @media print {
+      aside, nav, #backToTop, .no-print { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-tech-dark text-slate-300 antialiased min-h-screen py-6 md:py-10">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" aria-label="กลับขึ้นด้านบน" class="hidden-btn fixed bottom-6 right-6 z-40 bg-tech-accent text-slate-900 w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-300">
+    <ion-icon name="arrow-up-outline" class="text-2xl"></ion-icon>
+  </button>
+
+  <main class="max-w-6xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="bg-tech-card rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-700/50 lg:col-span-1 h-fit lg:sticky lg:top-10 z-20">
+
+      <!-- Profile Info -->
+      <div class="flex flex-col items-center text-center pb-6 border-b border-slate-700">
+        <figure class="w-28 h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden mb-4 border-4 border-slate-700 shadow-lg relative group">
+          <img src="./assets/images/profile.jpg" alt="Rachod Medacha" class="w-full h-full object-cover transition duration-300 group-hover:scale-110" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Rachod+Medacha&background=38bdf8&color=fff&size=200'">
+        </figure>
+        <h1 class="text-xl md:text-2xl font-semibold text-white mb-2">Rachod Medacha</h1>
+        <span id="typingRole" class="bg-slate-800 text-tech-accent px-4 py-1.5 rounded-lg text-sm font-medium tracking-wide shadow-inner min-h-[2rem] inline-flex items-center">
+          <span id="typingText">System Security Engineer</span><span class="cursor-blink">|</span>
+        </span>
+
+        <!-- Social Links -->
+        <div class="flex gap-3 mt-4">
+          <a href="mailto:intelgeneral.life@gmail.com" aria-label="Email" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-tech-accent hover:text-slate-900 transition-colors">
+            <ion-icon name="mail-outline"></ion-icon>
+          </a>
+          <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-tech-accent hover:text-slate-900 transition-colors">
+            <ion-icon name="logo-linkedin"></ion-icon>
+          </a>
+          <a href="#" aria-label="GitHub" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-tech-accent hover:text-slate-900 transition-colors">
+            <ion-icon name="logo-github"></ion-icon>
+          </a>
+        </div>
+      </div>
+
+      <!-- Contacts -->
+      <ul class="pt-6 space-y-5">
+        <li class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+            <ion-icon name="mail-outline" class="text-xl"></ion-icon>
+          </div>
+          <div class="overflow-hidden">
+            <p class="text-xs text-slate-400 uppercase tracking-wider mb-0.5">Email</p>
+            <a href="mailto:intelgeneral.life@gmail.com" class="text-sm text-slate-200 hover:text-tech-accent transition-colors block leading-tight break-all">
+              intelgeneral.life@gmail.com
+            </a>
+          </div>
+        </li>
+
+        <li class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+            <ion-icon name="phone-portrait-outline" class="text-xl"></ion-icon>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 uppercase tracking-wider mb-0.5">Phone</p>
+            <a href="tel:+66612566898" class="text-sm text-slate-200 hover:text-tech-accent transition-colors">+66 612566898</a>
+          </div>
+        </li>
+
+        <li class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+            <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 uppercase tracking-wider mb-0.5">Birthday</p>
+            <time datetime="1986-12-30" class="text-sm text-slate-200">30 Dec 1986</time>
+          </div>
+        </li>
+
+        <li class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+            <ion-icon name="location-outline" class="text-xl"></ion-icon>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 uppercase tracking-wider mb-0.5">Location</p>
+            <address class="text-sm text-slate-200 not-italic">Bangkok, TH</address>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Resume Download / Print -->
+      <div class="mt-8 space-y-3">
+        <a href="./assets/docs/Rachod_Medacha_Resume.pdf" download class="w-full flex items-center justify-center gap-3 bg-tech-accent text-slate-900 py-3 rounded-xl text-sm font-semibold hover:bg-sky-400 transition-all shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)]">
+          <ion-icon name="download-outline" class="text-2xl"></ion-icon>
+          <span class="text-center leading-tight">Download Resume</span>
+        </a>
+        <button id="printBtn" type="button" class="w-full flex items-center justify-center gap-3 bg-slate-800 border border-slate-700 text-slate-200 py-3 rounded-xl text-sm font-semibold hover:border-tech-accent hover:text-tech-accent transition-all">
+          <ion-icon name="print-outline" class="text-xl"></ion-icon>
+          <span>Print Resume</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="bg-tech-card rounded-3xl shadow-2xl border border-slate-700/50 lg:col-span-3 overflow-hidden relative">
+
+      <!-- Navbar -->
+      <nav class="bg-slate-800/80 border-b border-slate-700 px-4 md:px-8 py-4 md:py-5 backdrop-blur-md sticky top-0 z-30">
+        <div class="flex items-center justify-between">
+          <span class="font-semibold text-white text-lg lg:hidden">Menu</span>
+          <ul class="hidden lg:flex gap-8 text-sm font-medium">
+            <li><button class="nav-btn text-tech-accent border-b-2 border-tech-accent pb-1 transition-colors focus:outline-none" data-target="about">About</button></li>
+            <li><button class="nav-btn text-slate-400 hover:text-white pb-1 transition-colors focus:outline-none" data-target="resume">Resume</button></li>
+            <li><button class="nav-btn text-slate-400 hover:text-white pb-1 transition-colors focus:outline-none" data-target="portfolio">Portfolio</button></li>
+            <li><button class="nav-btn text-slate-400 hover:text-white pb-1 transition-colors focus:outline-none" data-target="contact">Contact</button></li>
+          </ul>
+          <!-- Hamburger -->
+          <button id="hamburgerBtn" aria-label="เปิดเมนู" aria-expanded="false" class="lg:hidden w-10 h-10 rounded-lg bg-slate-700 text-white flex items-center justify-center">
+            <ion-icon name="menu-outline" id="hamburgerIcon" class="text-2xl"></ion-icon>
+          </button>
+        </div>
+        <!-- Mobile nav -->
+        <ul id="mobileNav" class="mobile-nav lg:hidden flex flex-col gap-2 mt-4 text-sm font-medium">
+          <li><button class="nav-btn w-full text-left px-4 py-3 rounded-lg bg-slate-900 text-tech-accent transition-colors" data-target="about">About</button></li>
+          <li><button class="nav-btn w-full text-left px-4 py-3 rounded-lg bg-slate-900 text-slate-300 transition-colors" data-target="resume">Resume</button></li>
+          <li><button class="nav-btn w-full text-left px-4 py-3 rounded-lg bg-slate-900 text-slate-300 transition-colors" data-target="portfolio">Portfolio</button></li>
+          <li><button class="nav-btn w-full text-left px-4 py-3 rounded-lg bg-slate-900 text-slate-300 transition-colors" data-target="contact">Contact</button></li>
+        </ul>
+      </nav>
+
+      <div class="p-5 md:p-8 lg:p-10">
+
+        <!-- ================= ABOUT SECTION ================= -->
+        <section id="about" class="page-section active space-y-12">
+
+          <div>
+            <div class="flex items-center gap-4 mb-6">
+              <h2 class="text-2xl md:text-3xl font-semibold text-white">About Me</h2>
+              <div class="h-1 flex-1 bg-gradient-to-r from-tech-accent to-transparent rounded-full opacity-30"></div>
+            </div>
+            <div class="text-slate-300 leading-relaxed space-y-4">
+              <p>ปัจจุบันเป็นวิศวกรรักษาความปลอดภัยระบบจากกรุงเทพมหานคร ประเทศไทย ทำงานในตำแหน่งวิศวกรรักษาความปลอดภัยระบบ, ความปลอดภัยเครือข่าย, Virtual Machine (VMWARE, Proxmox, Hyper-V) สนใจโซลูชัน AI เพื่อเพิ่มประสิทธิภาพการทำงาน</p>
+              <p class="border-l-4 border-tech-accent pl-4 text-slate-400 italic">"กำลังมองหาความท้าทายและการประเมินตนเองในตำแหน่งใหม่เพื่อเป้าหมายที่กว้างขึ้น"</p>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover:border-tech-accent/50 transition-colors">
+              <p class="text-3xl font-bold text-tech-accent" data-count="11">0</p>
+              <p class="text-xs text-slate-400 mt-1 uppercase tracking-wide">ปีประสบการณ์</p>
+            </div>
+            <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover:border-tech-accent/50 transition-colors">
+              <p class="text-3xl font-bold text-tech-accent" data-count="3">0</p>
+              <p class="text-xs text-slate-400 mt-1 uppercase tracking-wide">บริษัทที่ทำงาน</p>
+            </div>
+            <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover:border-tech-accent/50 transition-colors">
+              <p class="text-3xl font-bold text-tech-accent" data-count="800">0</p>
+              <p class="text-xs text-slate-400 mt-1 uppercase tracking-wide">ผู้ใช้งานที่ดูแล</p>
+            </div>
+            <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover:border-tech-accent/50 transition-colors">
+              <p class="text-3xl font-bold text-tech-accent" data-count="2">0</p>
+              <p class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Certificates</p>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-semibold text-white mb-6">What I'm Doing</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-tech-accent/50 transition-colors group shadow-lg">
+                <ion-icon name="server-outline" class="text-4xl text-tech-accent mb-4 group-hover:scale-110 transition-transform"></ion-icon>
+                <h4 class="text-lg font-semibold text-white mb-2">Virtual Machine</h4>
+                <p class="text-sm text-slate-400 leading-relaxed">มีความเชี่ยวชาญด้าน Virtualization, Backup และ Cloud Infrastructure ด้วย vCenter VMware, Veeam, Proxmox, Azure, AWS และ Linux OS</p>
+              </div>
+              <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-tech-accent/50 transition-colors group shadow-lg">
+                <ion-icon name="logo-windows" class="text-4xl text-tech-accent mb-4 group-hover:scale-110 transition-transform"></ion-icon>
+                <h4 class="text-lg font-semibold text-white mb-2">Microsoft Admin Tools</h4>
+                <p class="text-sm text-slate-400 leading-relaxed">เชี่ยวชาญระบบโครงสร้างพื้นฐานองค์กร (800+ คน) ด้าน Microsoft Entra, Network Services, VMware, Cloud และ SQL/MySQL</p>
+              </div>
+              <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-tech-accent/50 transition-colors group shadow-lg">
+                <ion-icon name="shield-checkmark-outline" class="text-4xl text-tech-accent mb-4 group-hover:scale-110 transition-transform"></ion-icon>
+                <h4 class="text-lg font-semibold text-white mb-2">Network & Security</h4>
+                <p class="text-sm text-slate-400 leading-relaxed">เข้าใจระบบ Router, Switch, Firewall, AP และโซลูชัน Backup, Cloud Storage, DR Site และ IT Contingency Plan</p>
+              </div>
+              <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-tech-accent/50 transition-colors group shadow-lg">
+                <ion-icon name="code-working-outline" class="text-4xl text-tech-accent mb-4 group-hover:scale-110 transition-transform"></ion-icon>
+                <h4 class="text-lg font-semibold text-white mb-2">Automation & Low-code</h4>
+                <p class="text-sm text-slate-400 leading-relaxed">เชี่ยวชาญ PowerShell, Power Automate, AppSheet, AppScript, PowerApps, Python, n8n และ AI Agent</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= RESUME SECTION ================= -->
+        <section id="resume" class="page-section space-y-12">
+
+          <div class="flex items-center gap-4 mb-8">
+            <h2 class="text-2xl md:text-3xl font-semibold text-white">Resume</h2>
+            <div class="h-1 flex-1 bg-gradient-to-r from-tech-accent to-transparent rounded-full opacity-30"></div>
+          </div>
+
+          <!-- Education Timeline -->
+          <div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+                <ion-icon name="book-outline" class="text-xl"></ion-icon>
+              </div>
+              <h3 class="text-xl font-semibold text-white">Education & Training</h3>
+            </div>
+
+            <div class="border-l-2 border-slate-700 ml-5 pl-8 py-2 space-y-8">
+              <div class="relative reveal">
+                <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-tech-accent shadow-[0_0_10px_rgba(56,189,248,0.5)] border-4 border-tech-card"></div>
+                <h4 class="text-lg font-semibold text-white">มหาวิทยาลัย เกษมบัณฑิต (Kasembundit University)</h4>
+                <span class="text-tech-accent text-sm font-medium mb-2 block">2005 – 2013</span>
+                <p class="text-slate-400 text-sm">ระดับการศึกษา: ปริญญาตรี <br> วุฒิการศึกษา: วท.บ. <br> สาขา: เทคโนโลยีสารสนเทศ</p>
+              </div>
+              <div class="relative reveal">
+                <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4 border-tech-card"></div>
+                <h4 class="text-lg font-semibold text-white">ITCert</h4>
+                <p class="text-slate-400 text-sm mt-1">- Implement Install Windows Server 2012, 2016 Administrator <br>- Implement Install Windows Server 2012, 2016 Remote desktop Service</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Certifications -->
+          <div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+                <ion-icon name="ribbon-outline" class="text-xl"></ion-icon>
+              </div>
+              <h3 class="text-xl font-semibold text-white">Certifications</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="reveal bg-slate-800 p-5 rounded-2xl border border-slate-700 flex items-center gap-4">
+                <ion-icon name="medal-outline" class="text-3xl text-tech-accent shrink-0"></ion-icon>
+                <div>
+                  <h4 class="text-white font-medium">Windows Server 2012/2016 Administrator</h4>
+                  <p class="text-xs text-slate-400">ITCert Certification</p>
+                </div>
+              </div>
+              <div class="reveal bg-slate-800 p-5 rounded-2xl border border-slate-700 flex items-center gap-4">
+                <ion-icon name="medal-outline" class="text-3xl text-tech-accent shrink-0"></ion-icon>
+                <div>
+                  <h4 class="text-white font-medium">Remote Desktop Services Implementation</h4>
+                  <p class="text-xs text-slate-400">ITCert Certification</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Experience Timeline -->
+          <div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+                <ion-icon name="briefcase-outline" class="text-xl"></ion-icon>
+              </div>
+              <h3 class="text-xl font-semibold text-white">Experience</h3>
+            </div>
+
+            <div class="border-l-2 border-slate-700 ml-5 pl-8 py-2 space-y-10">
+
+              <div class="relative group reveal">
+                <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-tech-accent shadow-[0_0_10px_rgba(56,189,248,0.5)] border-4 border-tech-card group-hover:bg-white transition-colors"></div>
+                <h4 class="text-lg font-semibold text-white group-hover:text-tech-accent transition-colors">System Security Engineer</h4>
+                <span class="text-tech-accent text-sm font-medium mb-3 block">Kwe-Kintetsu World Express (Thailand) | Oct 2023 - Current</span>
+                <ul class="text-slate-400 text-sm space-y-2 list-disc list-outside ml-4">
+                  <li>ดูแลทีมงานและหน่วยงาน พร้อมทั้งจัดการระบบและความปลอดภัยสำหรับองค์กร (>800 คน)</li>
+                  <li>จัดการ Microsoft Entra ID, DHCP, DNS, WSUS, Group Policy Management, Global Protect</li>
+                  <li>ดูแล Networks Security, Routers, Switches, Firewalls, AP</li>
+                  <li>จัดการระบบ vCenter VMWare, Veeam Backup, Proxmox, Azure, AWS, LinuxOS</li>
+                  <li>เขียนโปรแกรม Automation ด้วย Powershell, MS Power Automate, Appsheet, Python, PowerApps</li>
+                </ul>
+              </div>
+
+              <div class="relative group reveal">
+                <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4 border-tech-card group-hover:bg-tech-accent transition-colors"></div>
+                <h4 class="text-lg font-semibold text-white group-hover:text-tech-accent transition-colors">Senior IT</h4>
+                <span class="text-tech-accent text-sm font-medium mb-3 block">Essilorluxottica Thailand | June 2018 - Oct 2023</span>
+                <ul class="text-slate-400 text-sm space-y-2 list-disc list-outside ml-4">
+                  <li>ดูแลทีมงาน 3 หน่วยงาน (TH, KHM, VN) และใช้ระบบ Services Desk</li>
+                  <li>จัดการ Active Directory, DHCP, DNS, Group Policy (พนักงาน >200 คน)</li>
+                  <li>ดูแล Network Admin, VMWare, Azure, AWS, SQL Server, MySQL, Office 365</li>
+                  <li>Support PABX, Cloud IP Phone, CCTV และ IT Contingency Plan (ITIL, COBIT)</li>
+                </ul>
+              </div>
+
+              <div class="relative group reveal">
+                <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4 border-tech-card group-hover:bg-tech-accent transition-colors"></div>
+                <h4 class="text-lg font-semibold text-white group-hover:text-tech-accent transition-colors">IT Support</h4>
+                <span class="text-tech-accent text-sm font-medium mb-3 block">V-oneasset | 2013 - 2018</span>
+                <ul class="text-slate-400 text-sm space-y-2 list-disc list-outside ml-4">
+                  <li>ดูแลระบบไอทีธุรกิจในเครือ (อพาร์ตเมนต์ 13 แห่ง, โรงแรม 2 แห่ง)</li>
+                  <li>Setup VPN ระหว่างธุรกิจ, วางแผนและติดตั้งระบบ Network, VLAN, CCTV, Fire Alarm</li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <div class="bg-slate-800/50 p-6 md:p-8 rounded-2xl border border-slate-700 mt-8">
+            <h3 class="text-xl font-semibold text-white mb-6">Technical Skills</h3>
+            <div class="space-y-6">
+
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="text-white font-medium">Virtual Machine (VMware, Proxmox, Azure)</span>
+                  <span class="text-tech-accent">90%</span>
+                </div>
+                <div class="w-full bg-slate-700 rounded-full h-2">
+                  <div class="skill-bar-fill bg-tech-accent h-2 rounded-full shadow-[0_0_10px_rgba(56,189,248,0.5)]" style="--target-width: 90%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="text-white font-medium">Microsoft Server Administration Tools</span>
+                  <span class="text-tech-accent">70%</span>
+                </div>
+                <div class="w-full bg-slate-700 rounded-full h-2">
+                  <div class="skill-bar-fill bg-tech-accent h-2 rounded-full" style="--target-width: 70%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="text-white font-medium">Network & Security (Firewall, Switches)</span>
+                  <span class="text-tech-accent">70%</span>
+                </div>
+                <div class="w-full bg-slate-700 rounded-full h-2">
+                  <div class="skill-bar-fill bg-tech-accent h-2 rounded-full" style="--target-width: 70%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="text-white font-medium">Automation & Low-code (PowerShell, Python, n8n)</span>
+                  <span class="text-tech-accent">70%</span>
+                </div>
+                <div class="w-full bg-slate-700 rounded-full h-2">
+                  <div class="skill-bar-fill bg-tech-accent h-2 rounded-full" style="--target-width: 70%"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================= PORTFOLIO SECTION ================= -->
+        <section id="portfolio" class="page-section space-y-8">
+
+          <div class="flex items-center gap-4 mb-6">
+            <h2 class="text-2xl md:text-3xl font-semibold text-white">Portfolio</h2>
+            <div class="h-1 flex-1 bg-gradient-to-r from-tech-accent to-transparent rounded-full opacity-30"></div>
+          </div>
+
+          <!-- Project Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+            <!-- Item 1 -->
+            <div class="portfolio-item reveal bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700 hover:border-tech-accent transition-all shadow-lg hover:shadow-tech-accent/20"
+              data-title="Infrastructure Setup" data-category="Network & Security"
+              data-desc="ออกแบบและติดตั้งระบบโครงสร้างพื้นฐานเครือข่ายรวมถึง Firewall, Switch และ Access Point เพื่อรองรับผู้ใช้งานกว่า 800 คนในองค์กร พร้อมทั้งวางแผน Redundancy และ DR Site"
+              data-img="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80">
+              <div class="h-48 bg-slate-900 overflow-hidden relative">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80" alt="Infrastructure Setup" class="w-full h-full object-cover group-hover:scale-110 group-hover:opacity-50 transition duration-500">
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div class="bg-tech-accent text-slate-900 p-3 rounded-full"><ion-icon name="eye-outline" class="text-2xl"></ion-icon></div>
+                </div>
+              </div>
+              <div class="p-5">
+                <h3 class="text-lg font-semibold text-white mb-1">Infrastructure Setup</h3>
+                <p class="text-sm text-tech-accent">Network & Security</p>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="portfolio-item reveal bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700 hover:border-tech-accent transition-all shadow-lg hover:shadow-tech-accent/20"
+              data-title="Cloud Migration" data-category="Virtual Machine"
+              data-desc="ย้ายระบบงานสำคัญขององค์กรขึ้นสู่ระบบ Cloud (Azure/AWS) และ Proxmox พร้อมวางแผน Backup ด้วย Veeam เพื่อเพิ่มความยืดหยุ่นและลดต้นทุนการดูแลระบบ"
+              data-img="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80">
+              <div class="h-48 bg-slate-900 overflow-hidden relative">
+                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80" alt="Cloud Migration" class="w-full h-full object-cover group-hover:scale-110 group-hover:opacity-50 transition duration-500">
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div class="bg-tech-accent text-slate-900 p-3 rounded-full"><ion-icon name="eye-outline" class="text-2xl"></ion-icon></div>
+                </div>
+              </div>
+              <div class="p-5">
+                <h3 class="text-lg font-semibold text-white mb-1">Cloud Migration</h3>
+                <p class="text-sm text-tech-accent">Virtual Machine</p>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="portfolio-item reveal bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700 hover:border-tech-accent transition-all shadow-lg hover:shadow-tech-accent/20"
+              data-title="Automated Workflow" data-category="Automation & Low-code"
+              data-desc="พัฒนา Workflow อัตโนมัติด้วย PowerShell, Power Automate และ Python เพื่อลดขั้นตอนงาน IT ซ้ำซ้อน เช่นการสร้างบัญชีผู้ใช้ใหม่ และการตรวจสอบสถานะระบบอัตโนมัติ"
+              data-img="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80">
+              <div class="h-48 bg-slate-900 overflow-hidden relative">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80" alt="Automated Workflow" class="w-full h-full object-cover group-hover:scale-110 group-hover:opacity-50 transition duration-500">
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">The server is busy. Please try again later or select another AI Model.
