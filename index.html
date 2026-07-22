@@ -17,10 +17,16 @@
     theme: {
       extend: {
         fontFamily: { sans: ['Poppins', 'Noto Sans Thai', 'sans-serif'] },
-        colors: { tech: { dark: '#0f172a', card: '#1e293b', accent: '#38bdf8' } }
+        colors: { 
+          tech: {
+          dark: '#f8fafc',   // สีพื้นหลังหลักของทั้งเว็บ (ดำ/น้ำเงินเข้ม)
+          card: '#ffffff',   // สีพื้นหลังกล่อง/การ์ดต่างๆ
+          accent: '#0ea5e9', // สีเน้น (ปุ่ม, ไอคอน, highlight) ← สีนี้สำคัญที่สุด
+        }
       }
     }
   }
+}
 </script>
 
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
