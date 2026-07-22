@@ -1,953 +1,1126 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio & Resume CMS</title>
-<style>
-  :root{
-    --bg:#0b1120; --bg-alt:#0f172a; --card:#161f34; --card-2:#1c2942;
-    --accent:#6366f1; --accent2:#22d3ee; --text:#e2e8f0; --muted:#94a3b8;
-    --danger:#ef4444; --success:#22c55e; --radius:14px;
-    --shadow: 0 10px 30px rgba(0,0,0,.35);
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0; font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-    background:var(--bg); color:var(--text); line-height:1.6;
-  }
-  img{max-width:100%; display:block;}
-  a{color:var(--accent2); text-decoration:none;}
-  h1,h2,h3{margin:0 0 .5rem;}
-  section{padding:5rem 1.5rem; max-width:1100px; margin:0 auto;}
-  .section-title{font-size:2rem; text-align:center; margin-bottom:2.5rem; position:relative;}
-  .section-title::after{
-    content:''; display:block; width:60px; height:4px; margin:.6rem auto 0;
-    background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:4px;
-  }
-  .hidden{display:none !important;}
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rachod Medacha - Personal Portfolio</title>
 
-  /* Loader */
-  #loader{
-    position:fixed; inset:0; background:var(--bg); z-index:9999;
-    display:flex; align-items:center; justify-content:center; transition:opacity .4s;
-  }
-  .spinner{width:46px; height:46px; border:4px solid var(--card-2); border-top-color:var(--accent); border-radius:50%; animation:spin 1s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
+  <!--
+    - favicon
+  -->
+  <link rel="shortcut icon" href="./assets/images/logo.ico" type="image/x-icon">
 
-  /* Toast */
-  #toast-container{position:fixed; top:1rem; right:1rem; z-index:10000; display:flex; flex-direction:column; gap:.5rem;}
-  .toast{padding:.8rem 1.2rem; border-radius:10px; color:#fff; font-size:.9rem; box-shadow:var(--shadow); animation:fadeIn .3s;}
-  .toast.success{background:var(--success);}
-  .toast.error{background:var(--danger);}
-  @keyframes fadeIn{from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);}}
+  <!--
+    - custom css link
+  -->
+  <link rel="stylesheet" href="./assets/css/style.css">
 
-  /* Navbar */
-  .navbar{position:sticky; top:0; z-index:500; background:rgba(11,17,32,.85); backdrop-filter:blur(10px); border-bottom:1px solid rgba(255,255,255,.06);}
-  .nav-inner{max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem;}
-  .logo{font-weight:700; font-size:1.3rem; color:var(--text);}
-  .logo span{color:var(--accent2);}
-  .nav-links{display:flex; gap:1.5rem;}
-  .nav-links a{color:var(--muted); font-weight:500; font-size:.95rem;}
-  .nav-links a:hover{color:var(--accent2);}
-  .nav-toggle{display:none; background:none; border:none; color:var(--text); font-size:1.6rem; cursor:pointer;}
-
-  /* Hero */
-  .hero{display:flex; flex-wrap:wrap; align-items:center; gap:3rem; min-height:80vh;}
-  .hero-text{flex:1 1 320px;}
-  .hero-text .eyebrow{color:var(--accent2); font-weight:600; letter-spacing:1px;}
-  .hero-text h1{font-size:2.6rem; margin-top:.3rem;}
-  .hero-text p.bio{color:var(--muted); margin:1rem 0 1.5rem; max-width:520px;}
-  .hero-avatar{flex:0 0 220px; width:220px; height:220px; border-radius:50%; overflow:hidden;
-    background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center;
-    font-size:3rem; font-weight:700; color:#fff; box-shadow:var(--shadow); margin:0 auto;}
-  .hero-avatar img{width:100%; height:100%; object-fit:cover;}
-  .btn-group{display:flex; gap:1rem; flex-wrap:wrap;}
-  .btn{padding:.7rem 1.4rem; border-radius:10px; font-weight:600; border:none; cursor:pointer; font-size:.95rem; transition:.2s;}
-  .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#fff;}
-  .btn-primary:hover{opacity:.9; transform:translateY(-2px);}
-  .btn-outline{background:transparent; border:1px solid var(--muted); color:var(--text);}
-  .btn-outline:hover{border-color:var(--accent2); color:var(--accent2);}
-  .social-row{display:flex; gap:1rem; margin-top:1.2rem;}
-  .social-row a{width:38px; height:38px; border-radius:50%; background:var(--card); display:flex; align-items:center; justify-content:center; color:var(--text);}
-  .social-row a:hover{background:var(--accent);}
-
-  /* About */
-  .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:2rem;}
-  .info-list{list-style:none; padding:0; margin:0; display:grid; gap:.7rem;}
-  .info-list li{background:var(--card); padding:.7rem 1rem; border-radius:10px; display:flex; gap:.6rem; font-size:.92rem;}
-  .info-list b{color:var(--accent2);}
-
-  /* Skills */
-  .skills-cat{margin-bottom:2rem;}
-  .skills-cat h3{color:var(--accent2); font-size:1.1rem; margin-bottom:1rem;}
-  .skill-item{margin-bottom:1rem;}
-  .skill-head{display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:.3rem;}
-  .skill-bar{height:9px; border-radius:6px; background:var(--card-2); overflow:hidden;}
-  .skill-fill{height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:6px; transition:width 1s ease;}
-
-  /* Timeline */
-  .timeline{position:relative; padding-left:2rem; border-left:2px solid var(--card-2);}
-  .timeline-item{position:relative; margin-bottom:2rem;}
-  .timeline-item::before{content:''; position:absolute; left:-2.42rem; top:.3rem; width:12px; height:12px; border-radius:50%; background:var(--accent2); box-shadow:0 0 0 4px var(--bg);}
-  .timeline-item h3{font-size:1.1rem;}
-  .timeline-item .meta{color:var(--muted); font-size:.85rem; margin-bottom:.4rem;}
-  .timeline-item .desc{color:var(--text); font-size:.92rem;}
-
-  /* Portfolio */
-  .projects-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem;}
-  .project-card{background:var(--card); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column; transition:.25s;}
-  .project-card:hover{transform:translateY(-6px);}
-  .project-img{width:100%; height:170px; object-fit:cover; background:var(--card-2);}
-  .project-body{padding:1.1rem; display:flex; flex-direction:column; gap:.5rem; flex:1;}
-  .project-body h3{font-size:1.05rem;}
-  .project-body p{color:var(--muted); font-size:.88rem; flex:1;}
-  .tag-row{display:flex; flex-wrap:wrap; gap:.4rem;}
-  .tag{background:var(--card-2); color:var(--accent2); font-size:.72rem; padding:.2rem .6rem; border-radius:20px;}
-
-  /* Contact */
-  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:2rem;}
-  form .field{margin-bottom:1rem;}
-  label{display:block; font-size:.85rem; margin-bottom:.35rem; color:var(--muted);}
-  input, textarea, select{
-    width:100%; padding:.65rem .8rem; border-radius:8px; border:1px solid var(--card-2);
-    background:var(--bg-alt); color:var(--text); font-size:.92rem; font-family:inherit;
-  }
-  input:focus, textarea:focus{outline:2px solid var(--accent);}
-  textarea{resize:vertical; min-height:100px;}
-
-  footer{text-align:center; padding:2rem 1rem; color:var(--muted); font-size:.85rem; border-top:1px solid var(--card-2);}
-  .admin-link{margin-left:.5rem; opacity:.4;}
-
-  /* Admin */
-  .admin-wrapper{min-height:100vh; background:var(--bg-alt); padding:2rem 1rem;}
-  .admin-box{max-width:420px; margin:4rem auto; background:var(--card); padding:2rem; border-radius:var(--radius); box-shadow:var(--shadow);}
-  .admin-box h2{text-align:center; margin-bottom:1.5rem;}
-  .admin-dashboard{max-width:1100px; margin:0 auto;}
-  .admin-header{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;}
-  .tabs{display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.5rem;}
-  .tab-btn{padding:.5rem 1rem; border-radius:8px; background:var(--card); border:1px solid var(--card-2); color:var(--muted); cursor:pointer; font-size:.88rem;}
-  .tab-btn.active{background:var(--accent); color:#fff; border-color:var(--accent);}
-  .tab-panel{display:none;}
-  .tab-panel.active{display:block;}
-  .admin-card{background:var(--card); border-radius:var(--radius); padding:1.5rem; margin-bottom:1.5rem; box-shadow:var(--shadow);}
-  .form-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem;}
-  .form-grid .full{grid-column:1/-1;}
-  .item-row{display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; background:var(--card-2); padding:.9rem 1rem; border-radius:10px; margin-bottom:.7rem; flex-wrap:wrap;}
-  .item-row .item-info{flex:1; min-width:200px;}
-  .item-info strong{display:block; margin-bottom:.2rem;}
-  .item-info span{color:var(--muted); font-size:.82rem;}
-  .item-actions{display:flex; gap:.5rem;}
-  .btn-sm{padding:.4rem .8rem; font-size:.8rem; border-radius:6px;}
-  .btn-edit{background:var(--accent2); color:#0b1120;}
-  .btn-del{background:var(--danger); color:#fff;}
-  .back-link{color:var(--muted); font-size:.9rem; cursor:pointer;}
-
-  @media (max-width:768px){
-    .nav-links{position:absolute; top:100%; left:0; right:0; background:var(--bg-alt); flex-direction:column; padding:1rem; display:none; gap:1rem;}
-    .nav-links.open{display:flex;}
-    .nav-toggle{display:block;}
-    .about-grid, .contact-grid{grid-template-columns:1fr;}
-    .hero{text-align:center; justify-content:center;}
-    .btn-group, .social-row{justify-content:center;}
-  }
-</style>
+  <!--
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<div id="loader"><div class="spinner"></div></div>
-<div id="toast-container"></div>
-
-<!-- ============ PUBLIC SITE ============ -->
-<div id="site-wrapper" class="hidden">
-  <header class="navbar">
-    <div class="nav-inner">
-      <a href="#home" class="logo">Portfolio<span>.</span></a>
-      <nav id="nav-links" class="nav-links">
-        <a href="#home">หน้าแรก</a>
-        <a href="#about">เกี่ยวกับ</a>
-        <a href="#skills">ความสามารถ</a>
-        <a href="#experience">ประสบการณ์</a>
-        <a href="#education">การศึกษา</a>
-        <a href="#portfolio">ผลงาน</a>
-        <a href="#contact">ติดต่อ</a>
-      </nav>
-      <button id="nav-toggle" class="nav-toggle">☰</button>
-    </div>
-  </header>
+  <!--
+    - #MAIN
+  -->
 
   <main>
-    <section id="home" class="hero">
-      <div class="hero-text">
-        <div class="eyebrow">สวัสดี ผมคือ</div>
-        <h1 id="hero-name">Your Name</h1>
-        <p class="eyebrow" id="hero-title" style="color:var(--muted); font-weight:500;">Job Title</p>
-        <p class="bio" id="hero-bio">คำอธิบายสั้น ๆ เกี่ยวกับตัวคุณจะแสดงที่นี่</p>
-        <div class="btn-group">
-          <a href="#contact" class="btn btn-primary">ติดต่อผม</a>
-          <a id="resume-link" href="#" target="_blank" class="btn btn-outline hidden">ดาวน์โหลด Resume</a>
-        </div>
-        <div class="social-row">
-          <a id="social-github" href="#" target="_blank" class="hidden" title="Github">GH</a>
-          <a id="social-linkedin" href="#" target="_blank" class="hidden" title="LinkedIn">IN</a>
-          <a id="social-mail" href="#" class="hidden" title="Email">@</a>
-        </div>
-      </div>
-      <div class="hero-avatar" id="hero-avatar">?</div>
-    </section>
 
-    <section id="about">
-      <h2 class="section-title">เกี่ยวกับผม</h2>
-      <div class="about-grid">
-        <div>
-          <p id="about-bio" style="color:var(--muted);">ยังไม่มีข้อมูล</p>
+    <!--
+      - #SIDEBAR
+    -->
+
+    <aside class="sidebar" data-sidebar>
+
+      <div class="sidebar-info">
+
+        <figure class="avatar-box">
+          <img src="./assets/images/profile.jpg" alt="Rachod Medacha" width="80">
+        </figure>
+
+        <div class="info-content">
+          <h1 class="name" title="Rachod Medacha">Rachod Medacha</h1>
+
+          <p class="title">System Security Engineer</p>
         </div>
-        <ul class="info-list">
-          <li><b>Email:</b> <span id="about-email">-</span></li>
-          <li><b>โทรศัพท์:</b> <span id="about-phone">-</span></li>
-          <li><b>ที่อยู่:</b> <span id="about-location">-</span></li>
+
+        <button class="info_more-btn" data-sidebar-btn>
+          <span>Show Contacts</span>
+
+          <ion-icon name="chevron-down"></ion-icon>
+        </button>
+
+      </div>
+
+      <div class="sidebar-info_more">
+
+        <div class="separator"></div>
+
+        <ul class="contacts-list">
+
+          <li class="contact-item">
+
+            <div class="icon-box">
+              <ion-icon name="mail-outline"></ion-icon>
+            </div>
+
+            <div class="contact-info">
+              <p class="contact-title">Email</p>
+
+              <a href="mailto:intelgeneral.life@gmail.com" class="contact-link">intelgeneral.life<wbr>@gmail.com</a>
+            </div>
+
+          </li>
+
+          <li class="contact-item">
+
+            <div class="icon-box">
+              <ion-icon name="phone-portrait-outline"></ion-icon>
+            </div>
+
+            <div class="contact-info">
+              <p class="contact-title">Phone</p>
+
+              <a href="tel:+66 612566898" class="contact-link">+66 612566898</a>
+            </div>
+
+          </li>
+
+          <li class="contact-item">
+
+            <div class="icon-box">
+              <ion-icon name="calendar-outline"></ion-icon>
+            </div>
+
+            <div class="contact-info">
+              <p class="contact-title">Birthday</p>
+
+              <time datetime="1986-12-30">30 Dec 1986</time>
+            </div>
+
+          </li>
+
+          <li class="contact-item">
+
+            <div class="icon-box">
+              <ion-icon name="location-outline"></ion-icon>
+            </div>
+
+            <div class="contact-info">
+              <p class="contact-title">Location</p>
+
+              <address>Bangkok, TH</address>
+            </div>
+             </li>
+          
+          <li class="contact-item">
+
+            <div class="icon-box">
+              <ion-icon name="mail-outline"></ion-icon>
+            </div>
+
+            <div class="contact-info">
+              <p class="contact-title">Download Resume</p>
+
+              <a href="./assets/docs/Rachod_Medacha_Resume.pdf" download class="btn">Download</a>
+            </div>
+          </li>
+
         </ul>
+
+        <div class="separator"></div>
+
+        <ul class="social-list">
+
+          <li class="social-item">
+            <a href="#" class="social-link">
+              <ion-icon name="logo-facebook"></ion-icon>
+            </a>
+          </li>
+
+          <li class="social-item">
+            <a href="#" class="social-link">
+              <ion-icon name="logo-twitter"></ion-icon>
+            </a>
+          </li>
+
+          <li class="social-item">
+            <a href="#" class="social-link">
+              <ion-icon name="logo-instagram"></ion-icon>
+            </a>
+          </li>
+
+        </ul>
+
       </div>
-    </section>
 
-    <section id="skills">
-      <h2 class="section-title">ความสามารถ</h2>
-      <div id="skills-container"></div>
-    </section>
+    </aside>
 
-    <section id="experience">
-      <h2 class="section-title">ประสบการณ์ทำงาน</h2>
-      <div class="timeline" id="experience-container"></div>
-    </section>
 
-    <section id="education">
-      <h2 class="section-title">การศึกษา</h2>
-      <div class="timeline" id="education-container"></div>
-    </section>
 
-    <section id="portfolio">
-      <h2 class="section-title">ผลงาน</h2>
-      <div class="projects-grid" id="projects-container"></div>
-    </section>
 
-    <section id="contact">
-      <h2 class="section-title">ติดต่อผม</h2>
-      <div class="contact-grid">
-        <div>
-          <p style="color:var(--muted);">สนใจร่วมงาน หรือมีคำถาม? ส่งข้อความมาได้เลยครับ</p>
+
+    <!--
+      - #main-content
+    -->
+
+    <div class="main-content">
+
+      <!--
+        - #NAVBAR
+      -->
+
+      <nav class="navbar">
+
+        <ul class="navbar-list">
+
+          <li class="navbar-item">
+            <button class="navbar-link  active" data-nav-link>About</button>
+          </li>
+
+          <li class="navbar-item">
+            <button class="navbar-link" data-nav-link>Resume</button>
+          </li>
+      <!--
+        - #NAVBAR
+
+          <li class="navbar-item">
+            <button class="navbar-link" data-nav-link>Portfolio1</button>
+          </li>
+
+          <li class="navbar-item">
+            <button class="navbar-link" data-nav-link>Blog</button>
+          </li>
+      
+          <li class="navbar-item">
+            <button class="navbar-link" data-nav-link>Contact</button>
+          </li>
+-->
+        </ul>
+
+      </nav>
+
+
+
+
+
+      <!--
+        - #ABOUT
+      -->
+
+      <article class="about  active" data-page="about">
+
+        <header>
+          <h2 class="h2 article-title">About me</h2>
+        </header>
+
+        <section class="about-text">
+          <p>
+            ปัจจุบันเป็นวิศวกรรักษาความปลอดภัยระบบจากกรุงเทพมหานคร ประเทศไทย
+            ทำงานในตำแหน่งวิศวกรรักษาความปลอดภัยระบบ, ความปลอดภัยเครือข่าย, Visual Machine (VMWARE, Proxmoc, Hyper-V)
+            สนใจโซลูชัน AI เพื่อเพิ่มประสิทธิภาพการทำงาน
+          </p>
+
+          <p>
+            - กำลังมองหาการประเมินตนเองในตำแหน่งใหม่เพื่อเป้าหมายที่กว้างขึ้น
+          </p>
+        </section>
+
+
+        <!--
+          - service
+        -->
+
+        <section class="service">
+
+          <h3 class="h3 service-title">What i'm doing</h3>
+
+          <ul class="service-list">
+
+            <li class="service-item">
+
+              <div class="service-icon-box">
+                <img src="./assets/images/icon-design.svg
+                " alt="design icon" width="40">
+              </div>
+
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">Visual Machine</h4>
+
+                <p class="service-item-text">
+                  มีความเชี่ยวชาญด้าน Virtualization, Backup และ Cloud Infrastructure ด้วย vCenter VMware, Veeam, Proxmox, Azure, AWS และ Linux OS
+                </p>
+              </div>
+
+            </li>
+
+            <li class="service-item">
+
+              <div class="service-icon-box">
+                <img src="./assets/images/icon-dev.svg" alt="Web development icon" width="40">
+              </div>
+
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">Microsoft Server Administration Tools</h4>
+
+                <p class="service-item-text">
+                  เชี่ยวชาญระบบโครงสร้างพื้นฐานองค์กร (800+ คน) ทั้งด้าน Microsoft Entra, 
+                  Network Services, VMware, Cloud (Azure, AWS) และฐานข้อมูล SQL/MySQL
+                </p>
+              </div>
+
+            </li>
+
+            <li class="service-item">
+
+              <div class="service-icon-box">
+                <img src="./assets/images/icon-app.svg" alt="mobile app icon" width="40">
+              </div>
+
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">Network & Security</h4>
+
+                <p class="service-item-text">
+                  เข้าใจระบบ Router, Switch, Firewall, AP และโซลูชัน Backup, Cloud Storage, DR Site และ IT Contingency Plan
+                </p>
+              </div>
+
+            </li>
+
+            <li class="service-item">
+
+              <div class="service-icon-box">
+                <img src="./assets/images/icon-photo.svg" alt="camera icon" width="40">
+              </div>
+
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">Automation & Low-code Development</h4>
+
+                <p class="service-item-text">
+                  เชี่ยวชาญ PowerShell, Power Automate, AppSheet, AppScript, PowerApps, Python, n8n และ AI Agent
+                </p>
+              </div>
+
+            </li>
+
+          </ul>
+
+        </section>
+
+
+
+        <!--
+          - testimonials
+        -->
+
+        <section class="testimonials">
+
+          <h3 class="h3 testimonials-title">training certificate</h3>
+
+          <ul class="testimonials-list has-scrollbar">
+
+            <li class="testimonials-item">
+              <div class="content-card" data-testimonials-item>
+
+                <figure class="testimonials-avatar-box">
+                  <img src="./assets/images/avatar-1.png" alt="Daniel lewis" width="60" data-testimonials-avatar>
+                </figure>
+
+                <h4 class="h4 testimonials-item-title" data-testimonials-title>ITCert (www.itcert2005.com)</h4>
+
+                <div class="testimonials-text" data-testimonials-text>
+                  <p>
+                    Implement Install Windows Server 2012,2016 Administrator
+                    ม.ค. 2016 - ปัจจุบัน
+                  </p>
+                </div>
+
+              </div>
+            </li>
+
+            <li class="testimonials-item">
+              <div class="content-card" data-testimonials-item>
+
+                <figure class="testimonials-avatar-box">
+                  <img src="./assets/images/avatar-2.png" alt="Jessica miller" width="60" data-testimonials-avatar>
+                </figure>
+
+                <h4 class="h4 testimonials-item-title" data-testimonials-title>ITCert (www.itcert2005.com)</h4>
+
+                <div class="testimonials-text" data-testimonials-text>
+                  <p>
+                    Implement Install Windows Server 2012,2016 Remote desktop Service
+                    ม.ค. 2016 - ปัจจุบัน
+                  </p>
+                </div>
+
+              </div>
+            </li>
+
+
+
+          </ul>
+
+        </section>
+
+
+
+         
+        <div class="modal-container" data-modal-container>
+
+          <div class="overlay" data-overlay></div>
+
+          <section class="testimonials-modal">
+
+            <button class="modal-close-btn" data-modal-close-btn>
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+
+            <div class="modal-img-wrapper">
+              <figure class="modal-avatar-box">
+                <img src="./assets/images/avatar-1.png" alt="Daniel lewis" width="80" data-modal-img>
+              </figure>
+
+              <img src="./assets/images/icon-quote.svg" alt="quote icon">
+            </div>
+
+            <div class="modal-content">
+
+              <h4 class="h3 modal-title" data-modal-title>Daniel lewis</h4>
+
+              <time datetime="2021-06-14">14 June, 2021</time>
+
+              <div data-modal-text>
+                <p>
+                  Richard was hired to create a corporate identity. We were very pleased with the work done. She has a
+                  lot of experience
+                  and is very concerned about the needs of client. Lorem ipsum dolor sit amet, ullamcous cididt
+                  consectetur adipiscing
+                  elit, seds do et eiusmod tempor incididunt ut laborels dolore magnarels alia.
+                </p>
+              </div>
+
+            </div>
+
+          </section>
+
         </div>
-        <form id="contact-form">
-          <div class="field"><label>ชื่อ</label><input type="text" id="contact-name" required></div>
-          <div class="field"><label>อีเมล</label><input type="email" id="contact-email" required></div>
-          <div class="field"><label>ข้อความ</label><textarea id="contact-message" required></textarea></div>
-          <button type="submit" class="btn btn-primary" style="width:100%;">ส่งข้อความ</button>
-        </form>
-      </div>
-    </section>
+
+
+        <!--
+          - clients
+        -->
+ 
+        <section class="clients">
+          <h3 class="h3 clients-title">Clients</h3>
+
+
+
+
+
+          </ul>
+
+        </section>
+
+      </article>
+
+
+
+
+
+      <!--
+        - #RESUME
+      -->
+
+      <article class="resume" data-page="resume">
+
+        <header>
+          <h2 class="h2 article-title">Resume</h2>
+        </header>
+
+        <section class="timeline">
+
+          <div class="title-wrapper">
+            <div class="icon-box">
+              <ion-icon name="book-outline"></ion-icon>
+            </div>
+
+            <h3 class="h3">Education</h3>
+          </div>
+
+          <ol class="timeline-list">
+
+            <li class="timeline-item">
+
+              <h4 class="h4 timeline-item-title">มหาวิทยาลัย เกษมบันทิต (Kasembundit University)</h4>
+
+              <span>2005 – 2013</span>
+
+              <p class="timeline-text">
+                ระดับการศึกษา : ปริญญาตรี   <br>
+                วุฒิการศึกษา : วท.บ.  <br>
+                สาขา : เทคโนโลยีสารสรเทศ  <br>
+              </p>
+
+            </li>
+
+          </ol>
+
+        </section>
+
+        <section class="timeline">
+
+          <div class="title-wrapper">
+            <div class="icon-box">
+              <ion-icon name="book-outline"></ion-icon>
+            </div>
+
+            <h3 class="h3">Experience</h3>
+          </div>
+
+          <ol class="timeline-list">
+
+            <li class="timeline-item">
+
+              <h4 class="h4 timeline-item-title">System Security Engineer</h4>
+
+              <span>Kwe-Kintetsu World Express (Thailand) / Ladprow, TH | Oct 2023 - Current</span>
+
+              <p class="timeline-text">
+                ดูแลทีมงานและหน่วยงาน พร้อมทั้งจัดการระบบและความปลอดภัยสำหรับองค์กร <br>
+                - ลักษณะการทำงานเกี่ยวกับ Microsoft Entra ID, DHCP, DNS, WSUS, Group Policy Management, Global Protect สำหรับองค์กรที่มีพนักงานมากกว่า 800 คน <br>
+                - มีความเข้าใจเกี่ยวกับ Networks Security, Routers, Switches, Firewalls, AP <br>
+                - มีประสบการณ์ในการใช้ vCenter VMWare, Veeam Backup, Proxmox, Azure, AWS ,LinuxOS การจัดการสำหรับองค์กร <br>
+                - มีความรู้เกี่ยวกับฐานข้อมูล Oracle Server (ODA) <br>
+                - มีประสบการณ์ในการใช้ Backup Storage, Cloud Storage, Dr Site, IT Contingency Plan <br>
+                - ความรู้เกี่ยวกับการเขียนโปรแกรมใน Powershell, MS Power Automate, Appsheet, Appscript, Python, PowerApps <br>
+                - วิเคราะห์และคาดการณ์ดำเนินแผนงานโครงการเพื่อให้แน่ใจว่าจะสำเร็จได้ตามเป้าหมายและตรงเวลา
+              </p>
+
+            </li>
+            
+            <li class="timeline-item">
+
+              <h4 class="h4 timeline-item-title">Senior IT</h4>
+
+              <span>Essilorluxottica Thailand / Sathon, TH | June 2018 - Oct 2023</span>
+
+              <p class="timeline-text">
+                ดูแลทีมงาน 3 หน่วยงานและจัดการระบบและอุปกรณ์ (TH, KHM, VN) <br>
+                - มีประสบการณ์ในการใช้เครื่องมือ/ซอฟต์แวร์ Services Desk <br>
+                - มีความเข้าใจเกี่ยวกับ Active Directory, DHCP, DNS, Group Policy Management สำหรับองค์กรที่มีพนักงานมากกว่า 200 คน <br>
+                - มีความเข้าใจเกี่ยวกับ Networks Administrator, Routers, Switches, Firewalls, AP <br>
+                - มีประสบการณ์ในการใช้ VMWare, Azure, AWS การจัดการสำหรับองค์กร <br>
+                - มีความรู้เกี่ยวกับฐานข้อมูล SQL Server และ MySQL <br>
+                - มีความคุ้นเคยกับผลิตภัณฑ์เดสก์ท็อปและเซิร์ฟเวอร์ของ Microsoft, O365 ที่ทำงานในสภาพแวดล้อมแบบองค์กร <br>
+                - มีประสบการณ์ในการใช้ Backup Storage, IT Contingency Plan <br>
+                - มีประสบการณ์ด้าน Support PABX, Cloud IP Phone และ CCTV <br>
+                - ความรู้เกี่ยวกับการเขียนโปรแกรมใน MS Power Automate, Appsheet, Python <br>
+                - วิเคราะห์และคาดการณ์ดำเนินแผนงานโครงการเพื่อให้แน่ใจว่าจะสำเร็จได้ตามเป้าหมายและตรงเวลา <br>
+                - ความรู้ในการเตรียมความพร้อมเพื่อรองรับการให้บริการโดยการเตรียมเอกสารหรือจัดทำแผนให้ครอบคลุมปัญหาที่จะเกิดขึ้น (ITIL) แนวคิด COBIT เพื่อการลดระยะเวลาเฉลี่ยของการแก้ไขปัญหา
+              </p>
+
+            </li>
+
+            <li class="timeline-item">
+
+              <h4 class="h4 timeline-item-title">IT Support</h4>
+
+              <span>V-oneasset /Ratchada, TH| 2013 - 2018</span>
+
+              <p class="timeline-text">
+                ดูแลระบบไอทีธุรกิจในเครือ (อพาร์ตเมนต์ 13 แห่ง, ค้าเบียร์ 1 แห่ง, โรงแรม 2 แห่ง) <br>
+                - มีความเข้าใจเกี่ยวกับโปรแกรม Express, MAC5 <br>
+                - มีประสบการณ์ในการ Setup VPN ระหว่างธุรกิจในเครือทั้งหมด <br>
+                - มีประสบการณ์ในการวางแผนและติดตั้งระบบในอาคารใหม่ เช่น Network, VLAN, Authentication Wifi, CCTV, Fire Alarm System, Cable TV <br>
+                - สำหรับองค์กรที่มีพนักงานมากกว่า 100 คน
+              </p>
+
+            </li>
+                        <li class="timeline-item">
+
+              <h4 class="h4 timeline-item-title">IT Support</h4>
+
+              <span>THAI IDENTITY SUGAR /Dindaeng, TH | 2019 - 2013</span>
+
+              <p class="timeline-text">
+
+              </p>
+
+            </li>
+            <!-- #RESUME  -->
+
+          </ol>
+
+        </section>
+
+        <section class="skill">
+
+          <h3 class="h3 skills-title">My skills</h3>
+
+          <ul class="skills-list content-card">
+
+            <li class="skills-item">
+
+              <div class="title-wrapper">
+                <h5 class="h5">Visual Machine</h5>
+                <data value="80">90%</data>
+              </div>
+
+              <div class="skill-progress-bg">
+                <div class="skill-progress-fill" style="width: 80%;"></div>
+              </div>
+
+            </li>
+
+            <li class="skills-item">
+
+              <div class="title-wrapper">
+                <h5 class="h5">Microsoft Server Administration Tools</h5>
+                <data value="70">70%</data>
+              </div>
+
+              <div class="skill-progress-bg">
+                <div class="skill-progress-fill" style="width: 70%;"></div>
+              </div>
+
+            </li>
+
+            <li class="skills-item">
+
+              <div class="title-wrapper">
+                <h5 class="h5">Network & Security</h5>
+                <data value="90">70%</data>
+              </div>
+
+              <div class="skill-progress-bg">
+                <div class="skill-progress-fill" style="width: 90%;"></div>
+              </div>
+
+            </li>
+
+            <li class="skills-item">
+
+              <div class="title-wrapper">
+                <h5 class="h5">Automation & Low-code Development</h5>
+                <data value="50">70%</data>
+              </div>
+
+              <div class="skill-progress-bg">
+                <div class="skill-progress-fill" style="width: 50%;"></div>
+              </div>
+
+            </li>
+
+          </ul>
+
+        </section>
+
+      </article>
+
+
+
+
+
+      <!--
+        - #PORTFOLIO
+       -->
+
+      <article class="portfolio" data-page="portfolio">
+
+        <header>
+          <h2 class="h2 article-title">Portfolio</h2>
+        </header>
+
+        <section class="projects">
+
+          <ul class="filter-list">
+
+            <li class="filter-item">
+              <button class="active" data-filter-btn>All</button>
+            </li>
+
+            <li class="filter-item">
+              <button data-filter-btn>Web design</button>
+            </li>
+
+            <li class="filter-item">
+              <button data-filter-btn>Applications</button>
+            </li>
+
+            <li class="filter-item">
+              <button data-filter-btn>Web development</button>
+            </li>
+
+          </ul>
+
+          <div class="filter-select-box">
+
+            <button class="filter-select" data-select>
+
+              <div class="select-value" data-selecct-value>Select category</div>
+
+              <div class="select-icon">
+                <ion-icon name="chevron-down"></ion-icon>
+              </div>
+
+            </button>
+
+            <ul class="select-list">
+
+              <li class="select-item">
+                <button data-select-item>All</button>
+              </li>
+
+              <li class="select-item">
+                <button data-select-item>Web design</button>
+              </li>
+
+              <li class="select-item">
+                <button data-select-item>Applications</button>
+              </li>
+
+              <li class="select-item">
+                <button data-select-item>Web development</button>
+              </li>
+
+            </ul>
+
+          </div>
+
+          <ul class="project-list">
+
+            <li class="project-item  active" data-filter-item data-category="web development">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-1.jpg" alt="finance" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Finance</h3>
+
+                <p class="project-category">Web development</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="web development">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-2.png" alt="orizon" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Orizon</h3>
+
+                <p class="project-category">Web development</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="web design">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-3.jpg" alt="fundo" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Fundo</h3>
+
+                <p class="project-category">Web design</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="applications">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-4.png" alt="brawlhalla" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Brawlhalla</h3>
+
+                <p class="project-category">Applications</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="web design">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-5.png" alt="dsm." loading="lazy">
+                </figure>
+
+                <h3 class="project-title">DSM.</h3>
+
+                <p class="project-category">Web design</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="web design">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-6.png" alt="metaspark" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">MetaSpark</h3>
+
+                <p class="project-category">Web design</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="web development">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-7.png" alt="summary" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Summary</h3>
+
+                <p class="project-category">Web development</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="applications">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-8.jpg" alt="task manager" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Task Manager</h3>
+
+                <p class="project-category">Applications</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="web development">
+              <a href="#">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-9.png" alt="arrival" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Arrival</h3>
+
+                <p class="project-category">Web development</p>
+
+              </a>
+            </li>
+
+          </ul>
+
+        </section>
+
+      </article>
+
+
+
+
+
+      <!--
+        - #BLOG
+      -->
+
+      <article class="blog" data-page="blog">
+
+        <header>
+          <h2 class="h2 article-title">Blog</h2>
+        </header>
+
+        <section class="blog-posts">
+
+          <ul class="blog-posts-list">
+
+            <li class="blog-post-item">
+              <a href="#">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/blog-1.jpg" alt="Design conferences in 2022" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">Design</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2022-02-23">Fab 23, 2022</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">Design conferences in 2022</h3>
+
+                  <p class="blog-text">
+                    Veritatis et quasi architecto beatae vitae dicta sunt, explicabo.
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
+            <li class="blog-post-item">
+              <a href="#">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/blog-2.jpg" alt="Best fonts every designer" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">Design</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2022-02-23">Fab 23, 2022</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">Best fonts every designer</h3>
+
+                  <p class="blog-text">
+                    Sed ut perspiciatis, nam libero tempore, cum soluta nobis est eligendi.
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
+            <li class="blog-post-item">
+              <a href="#">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/blog-3.jpg" alt="Design digest #80" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">Design</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2022-02-23">Fab 23, 2022</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">Design digest #80</h3>
+
+                  <p class="blog-text">
+                    Excepteur sint occaecat cupidatat no proident, quis nostrum exercitationem ullam corporis suscipit.
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
+            <li class="blog-post-item">
+              <a href="#">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/blog-4.jpg" alt="UI interactions of the week" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">Design</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2022-02-23">Fab 23, 2022</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">UI interactions of the week</h3>
+
+                  <p class="blog-text">
+                    Enim ad minim veniam, consectetur adipiscing elit, quis nostrud exercitation ullamco laboris nisi.
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
+            <li class="blog-post-item">
+              <a href="#">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/blog-5.jpg" alt="The forgotten art of spacing" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">Design</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2022-02-23">Fab 23, 2022</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">The forgotten art of spacing</h3>
+
+                  <p class="blog-text">
+                    Maxime placeat, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
+            <li class="blog-post-item">
+              <a href="#">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/blog-6.jpg" alt="Design digest #79" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">Design</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2022-02-23">Fab 23, 2022</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">Design digest #79</h3>
+
+                  <p class="blog-text">
+                    Optio cumque nihil impedit uo minus quod maxime placeat, velit esse cillum.
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
+          </ul>
+
+        </section>
+
+      </article>
+
+
+      <!--
+        - #CONTACT
+      -->
+
+      <article class="contact" data-page="contact">
+
+        <header>
+          <h2 class="h2 article-title">Contact</h2>
+        </header>
+
+        <section class="mapbox" data-mapbox>
+          <figure>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.696793581605!2d100.50176581524838!3d13.75633019036191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e299219ec9e14b%3A0x400d1b2ca2aa350!2sBangkok%2C%20Thailand!5e0!3m2!1sen!2sth!4v1690012345678!5m2!1sen!2sth"
+              width="400" height="300" loading="lazy"></iframe>
+          </figure>
+        </section>
+
+        <section class="contact-form">
+
+          <h3 class="h3 form-title">Contact Form</h3>
+
+          <form action="#" class="form" data-form>
+
+            <div class="input-wrapper">
+              <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input>
+
+              <input type="email" name="email" class="form-input" placeholder="Email address" required data-form-input>
+            </div>
+
+            <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input></textarea>
+
+            <button class="form-btn" type="submit" disabled data-form-btn>
+              <ion-icon name="paper-plane"></ion-icon>
+              <span>Send Message</span>
+            </button>
+
+          </form>
+
+        </section>
+        
+      </article>
+
+    </div>
+
   </main>
 
-  <footer>
-    <p>&copy; <span id="year"></span> Portfolio CMS. All rights reserved. <a href="#admin" class="admin-link">Admin</a></p>
-  </footer>
-</div>
 
-<!-- ============ ADMIN ============ -->
-<div id="admin-wrapper" class="admin-wrapper hidden">
 
-  <div id="admin-login" class="admin-box">
-    <h2>เข้าสู่ระบบผู้ดูแล</h2>
-    <form id="login-form">
-      <div class="field"><label>Email</label><input type="email" id="login-email" required></div>
-      <div class="field"><label>Password</label><input type="password" id="login-password" required></div>
-      <button type="submit" class="btn btn-primary" style="width:100%;">เข้าสู่ระบบ</button>
-    </form>
-    <p style="text-align:center; margin-top:1rem;"><span class="back-link" id="back-to-site-1">← กลับหน้าเว็บไซต์</span></p>
-  </div>
 
-  <div id="admin-dashboard" class="admin-dashboard hidden">
-    <div class="admin-header">
-      <h2 style="margin:0;">แผงควบคุมเนื้อหา</h2>
-      <div style="display:flex; gap:1rem; align-items:center;">
-        <span class="back-link" id="back-to-site-2">← กลับหน้าเว็บไซต์</span>
-        <button class="btn btn-outline btn-sm" id="logout-btn">ออกจากระบบ</button>
-      </div>
-    </div>
 
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="profile">โปรไฟล์</button>
-      <button class="tab-btn" data-tab="skills">ความสามารถ</button>
-      <button class="tab-btn" data-tab="experience">ประสบการณ์</button>
-      <button class="tab-btn" data-tab="education">การศึกษา</button>
-      <button class="tab-btn" data-tab="projects">ผลงาน</button>
-      <button class="tab-btn" data-tab="messages">ข้อความ</button>
-    </div>
 
-    <!-- Profile Tab -->
-    <div class="tab-panel active" id="tab-profile">
-      <div class="admin-card">
-        <h3>ข้อมูลส่วนตัว</h3>
-        <form id="profile-form">
-          <div class="form-grid">
-            <div class="field"><label>ชื่อ-นามสกุล</label><input type="text" id="p-name"></div>
-            <div class="field"><label>ตำแหน่ง/Title</label><input type="text" id="p-title"></div>
-            <div class="field"><label>อีเมล</label><input type="email" id="p-email"></div>
-            <div class="field"><label>โทรศัพท์</label><input type="text" id="p-phone"></div>
-            <div class="field"><label>ที่อยู่</label><input type="text" id="p-location"></div>
-            <div class="field"><label>Avatar URL</label><input type="text" id="p-avatar"></div>
-            <div class="field"><label>Github URL</label><input type="text" id="p-github"></div>
-            <div class="field"><label>LinkedIn URL</label><input type="text" id="p-linkedin"></div>
-            <div class="field"><label>Resume/CV URL</label><input type="text" id="p-resume"></div>
-            <div class="field full"><label>Bio / คำอธิบาย</label><textarea id="p-bio"></textarea></div>
-            <div class="field full">
-              <label>อัปโหลดรูป Avatar</label>
-              <input type="file" id="p-avatar-file" accept="image/*">
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="margin-top:1rem;">บันทึกโปรไฟล์</button>
-        </form>
-      </div>
-    </div>
+  <!--
+    - custom js link
+  -->
+  <script src="./assets/js/script.js"></script>
 
-    <!-- Skills Tab -->
-    <div class="tab-panel" id="tab-skills">
-      <div class="admin-card">
-        <h3 id="skill-form-title">เพิ่มความสามารถ</h3>
-        <form id="skill-form">
-          <input type="hidden" id="skill-id">
-          <div class="form-grid">
-            <div class="field"><label>ชื่อทักษะ</label><input type="text" id="skill-name" required></div>
-            <div class="field"><label>หมวดหมู่</label><input type="text" id="skill-category" placeholder="เช่น Frontend"></div>
-            <div class="field"><label>ระดับ (0-100)</label><input type="number" id="skill-level" min="0" max="100" value="70"></div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="margin-top:1rem;">บันทึก</button>
-        </form>
-      </div>
-      <div class="admin-card"><h3>รายการทักษะ</h3><div id="skill-list"></div></div>
-    </div>
+  <!--
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
-    <!-- Experience Tab -->
-    <div class="tab-panel" id="tab-experience">
-      <div class="admin-card">
-        <h3 id="exp-form-title">เพิ่มประสบการณ์</h3>
-        <form id="experience-form">
-          <input type="hidden" id="exp-id">
-          <div class="form-grid">
-            <div class="field"><label>บริษัท</label><input type="text" id="exp-company" required></div>
-            <div class="field"><label>ตำแหน่ง</label><input type="text" id="exp-position" required></div>
-            <div class="field"><label>วันที่เริ่ม</label><input type="text" id="exp-start" placeholder="2022"></div>
-            <div class="field"><label>วันที่สิ้นสุด</label><input type="text" id="exp-end" placeholder="ปัจจุบัน"></div>
-            <div class="field full"><label>รายละเอียด</label><textarea id="exp-desc"></textarea></div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="margin-top:1rem;">บันทึก</button>
-        </form>
-      </div>
-      <div class="admin-card"><h3>รายการประสบการณ์</h3><div id="experience-list"></div></div>
-    </div>
-
-    <!-- Education Tab -->
-    <div class="tab-panel" id="tab-education">
-      <div class="admin-card">
-        <h3 id="edu-form-title">เพิ่มการศึกษา</h3>
-        <form id="education-form">
-          <input type="hidden" id="edu-id">
-          <div class="form-grid">
-            <div class="field"><label>สถานศึกษา</label><input type="text" id="edu-school" required></div>
-            <div class="field"><label>วุฒิการศึกษา</label><input type="text" id="edu-degree"></div>
-            <div class="field"><label>สาขา</label><input type="text" id="edu-field"></div>
-            <div class="field"><label>วันที่เริ่ม</label><input type="text" id="edu-start"></div>
-            <div class="field"><label>วันที่สิ้นสุด</label><input type="text" id="edu-end"></div>
-            <div class="field full"><label>รายละเอียด</label><textarea id="edu-desc"></textarea></div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="margin-top:1rem;">บันทึก</button>
-        </form>
-      </div>
-      <div class="admin-card"><h3>รายการการศึกษา</h3><div id="education-list"></div></div>
-    </div>
-
-    <!-- Projects Tab -->
-    <div class="tab-panel" id="tab-projects">
-      <div class="admin-card">
-        <h3 id="proj-form-title">เพิ่มผลงาน</h3>
-        <form id="project-form">
-          <input type="hidden" id="proj-id">
-          <div class="form-grid">
-            <div class="field"><label>ชื่อผลงาน</label><input type="text" id="proj-title" required></div>
-            <div class="field"><label>ลิงก์โปรเจกต์</label><input type="text" id="proj-url"></div>
-            <div class="field"><label>Tags (คั่นด้วย ,)</label><input type="text" id="proj-tags" placeholder="React, Node.js"></div>
-            <div class="field"><label>Image URL</label><input type="text" id="proj-image"></div>
-            <div class="field full"><label>คำอธิบาย</label><textarea id="proj-desc"></textarea></div>
-            <div class="field full"><label>อัปโหลดรูปภาพ</label><input type="file" id="proj-image-file" accept="image/*"></div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="margin-top:1rem;">บันทึก</button>
-        </form>
-      </div>
-      <div class="admin-card"><h3>รายการผลงาน</h3><div id="project-list"></div></div>
-    </div>
-
-    <!-- Messages Tab -->
-    <div class="tab-panel" id="tab-messages">
-      <div class="admin-card"><h3>ข้อความติดต่อ</h3><div id="message-list"></div></div>
-    </div>
-
-  </div>
-</div>
-
-<script type="module">
-/* =====================================================================================
-   SUPABASE SQL SCHEMA (run in Supabase SQL Editor before using this app)
-   -------------------------------------------------------------------------------------
-   -- profile (single row, id = 1)
-   create table profile (
-     id int primary key default 1,
-     full_name text, title text, bio text, email text, phone text,
-     location text, avatar_url text, github_url text, linkedin_url text,
-     resume_url text, updated_at timestamptz default now()
-   );
-
-   create table skills (
-     id uuid primary key default gen_random_uuid(),
-     name text not null, level int default 70, category text default 'General',
-     created_at timestamptz default now()
-   );
-
-   create table experiences (
-     id uuid primary key default gen_random_uuid(),
-     company text, position text, start_date text, end_date text, description text,
-     created_at timestamptz default now()
-   );
-
-   create table educations (
-     id uuid primary key default gen_random_uuid(),
-     school text, degree text, field text, start_date text, end_date text, description text,
-     created_at timestamptz default now()
-   );
-
-   create table projects (
-     id uuid primary key default gen_random_uuid(),
-     title text, description text, image_url text, project_url text, tags text,
-     created_at timestamptz default now()
-   );
-
-   create table messages (
-     id uuid primary key default gen_random_uuid(),
-     name text, email text, message text, is_read boolean default false,
-     created_at timestamptz default now()
-   );
-
-   -- Enable RLS
-   alter table profile enable row level security;
-   alter table skills enable row level security;
-   alter table experiences enable row level security;
-   alter table educations enable row level security;
-   alter table projects enable row level security;
-   alter table messages enable row level security;
-
-   -- Public can READ everything except messages
-   create policy "public read profile" on profile for select using (true);
-   create policy "public read skills" on skills for select using (true);
-   create policy "public read experiences" on experiences for select using (true);
-   create policy "public read educations" on educations for select using (true);
-   create policy "public read projects" on projects for select using (true);
-
-   -- Public can INSERT messages only (contact form)
-   create policy "public insert messages" on messages for insert with check (true);
-
-   -- Authenticated (admin) can do everything
-   create policy "auth all profile" on profile for all using (auth.role() = 'authenticated');
-   create policy "auth all skills" on skills for all using (auth.role() = 'authenticated');
-   create policy "auth all experiences" on experiences for all using (auth.role() = 'authenticated');
-   create policy "auth all educations" on educations for all using (auth.role() = 'authenticated');
-   create policy "auth all projects" on projects for all using (auth.role() = 'authenticated');
-   create policy "auth all messages" on messages for all using (auth.role() = 'authenticated');
-
-   -- Storage: create a PUBLIC bucket named "media" for avatar/project images.
-   ===================================================================================== */
-
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-// ---- CONFIG: replace with your own Supabase project credentials ----
-const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-
-// persistSession/detectSessionInUrl disabled -> avoids using localStorage (sandbox safe)
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: false, autoRefreshToken: true, detectSessionInUrl: false }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => document.querySelectorAll(sel);
-
-  const siteWrapper = $('#site-wrapper');
-  const adminWrapper = $('#admin-wrapper');
-  const adminLogin = $('#admin-login');
-  const adminDashboard = $('#admin-dashboard');
-  const loader = $('#loader');
-
-  $('#year').textContent = new Date().getFullYear();
-
-  // ---------------- Toast helper ----------------
-  function showToast(msg, type = 'success') {
-    const t = document.createElement('div');
-    t.className = `toast ${type}`;
-    t.textContent = msg;
-    $('#toast-container').appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-  }
-
-  // ---------------- Routing (site vs admin) ----------------
-  function route() {
-    if (location.hash === '#admin') {
-      siteWrapper.classList.add('hidden');
-      adminWrapper.classList.remove('hidden');
-      checkAuthState();
-    } else {
-      adminWrapper.classList.add('hidden');
-      siteWrapper.classList.remove('hidden');
-    }
-  }
-  window.addEventListener('hashchange', route);
-
-  $('#back-to-site-1').addEventListener('click', () => { location.hash = '#home'; });
-  $('#back-to-site-2').addEventListener('click', () => { location.hash = '#home'; });
-
-  // ---------------- Mobile nav toggle ----------------
-  $('#nav-toggle').addEventListener('click', () => {
-    $('#nav-links').classList.toggle('open');
-  });
-  $$('.nav-links a').forEach(a => a.addEventListener('click', () => $('#nav-links').classList.remove('open')));
-
-  // ================= PUBLIC DATA LOADING =================
-  async function loadProfile() {
-    const { data, error } = await supabase.from('profile').select('*').eq('id', 1).maybeSingle();
-    if (error) { console.error(error); return; }
-    if (!data) return;
-    $('#hero-name').textContent = data.full_name || 'Your Name';
-    $('#hero-title').textContent = data.title || '';
-    $('#hero-bio').textContent = data.bio || '';
-    $('#about-bio').textContent = data.bio || 'ยังไม่มีข้อมูล';
-    $('#about-email').textContent = data.email || '-';
-    $('#about-phone').textContent = data.phone || '-';
-    $('#about-location').textContent = data.location || '-';
-
-    const avatarEl = $('#hero-avatar');
-    if (data.avatar_url) {
-      avatarEl.innerHTML = `<img src="${escapeHTML(data.avatar_url)}" alt="avatar">`;
-    } else {
-      const initials = (data.full_name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-      avatarEl.textContent = initials;
-    }
-
-    if (data.resume_url) {
-      $('#resume-link').href = data.resume_url;
-      $('#resume-link').classList.remove('hidden');
-    }
-    if (data.github_url) { $('#social-github').href = data.github_url; $('#social-github').classList.remove('hidden'); }
-    if (data.linkedin_url) { $('#social-linkedin').href = data.linkedin_url; $('#social-linkedin').classList.remove('hidden'); }
-    if (data.email) { $('#social-mail').href = `mailto:${data.email}`; $('#social-mail').classList.remove('hidden'); }
-
-    // Pre-fill admin profile form too
-    fillProfileForm(data);
-  }
-
-  async function loadSkills() {
-    const { data, error } = await supabase.from('skills').select('*').order('created_at', { ascending: true });
-    if (error) { console.error(error); return; }
-    const container = $('#skills-container');
-    container.innerHTML = '';
-    const grouped = {};
-    (data || []).forEach(s => {
-      const cat = s.category || 'General';
-      grouped[cat] = grouped[cat] || [];
-      grouped[cat].push(s);
-    });
-    Object.keys(grouped).forEach(cat => {
-      const catDiv = document.createElement('div');
-      catDiv.className = 'skills-cat';
-      catDiv.innerHTML = `<h3>${escapeHTML(cat)}</h3>`;
-      grouped[cat].forEach(s => {
-        catDiv.innerHTML += `
-          <div class="skill-item">
-            <div class="skill-head"><span>${escapeHTML(s.name)}</span><span>${s.level}%</span></div>
-            <div class="skill-bar"><div class="skill-fill" style="width:${s.level}%"></div></div>
-          </div>`;
-      });
-      container.appendChild(catDiv);
-    });
-    renderAdminSkillList(data || []);
-  }
-
-  async function loadExperiences() {
-    const { data, error } = await supabase.from('experiences').select('*').order('created_at', { ascending: false });
-    if (error) { console.error(error); return; }
-    const container = $('#experience-container');
-    container.innerHTML = (data || []).map(e => `
-      <div class="timeline-item">
-        <h3>${escapeHTML(e.position || '')} - ${escapeHTML(e.company || '')}</h3>
-        <div class="meta">${escapeHTML(e.start_date || '')} – ${escapeHTML(e.end_date || '')}</div>
-        <div class="desc">${escapeHTML(e.description || '')}</div>
-      </div>`).join('') || '<p style="color:var(--muted);">ยังไม่มีข้อมูล</p>';
-    renderAdminExperienceList(data || []);
-  }
-
-  async function loadEducations() {
-    const { data, error } = await supabase.from('educations').select('*').order('created_at', { ascending: false });
-    if (error) { console.error(error); return; }
-    const container = $('#education-container');
-    container.innerHTML = (data || []).map(e => `
-      <div class="timeline-item">
-        <h3>${escapeHTML(e.degree || '')} ${e.field ? '- ' + escapeHTML(e.field) : ''}</h3>
-        <div class="meta">${escapeHTML(e.school || '')} | ${escapeHTML(e.start_date || '')} – ${escapeHTML(e.end_date || '')}</div>
-        <div class="desc">${escapeHTML(e.description || '')}</div>
-      </div>`).join('') || '<p style="color:var(--muted);">ยังไม่มีข้อมูล</p>';
-    renderAdminEducationList(data || []);
-  }
-
-  async function loadProjects() {
-    const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: false });
-    if (error) { console.error(error); return; }
-    const container = $('#projects-container');
-    container.innerHTML = (data || []).map(p => `
-      <div class="project-card">
-        ${p.image_url ? `<img class="project-img" src="${escapeHTML(p.image_url)}" alt="${escapeHTML(p.title)}">` : `<div class="project-img"></div>`}
-        <div class="project-body">
-          <h3>${escapeHTML(p.title || '')}</h3>
-          <p>${escapeHTML(p.description || '')}</p>
-          <div class="tag-row">${(p.tags || '').split(',').filter(Boolean).map(t => `<span class="tag">${escapeHTML(t.trim())}</span>`).join('')}</div>
-          ${p.project_url ? `<a href="${escapeHTML(p.project_url)}" target="_blank" class="btn btn-outline btn-sm" style="align-self:flex-start;">ดูผลงาน →</a>` : ''}
-        </div>
-      </div>`).join('') || '<p style="color:var(--muted);">ยังไม่มีผลงาน</p>';
-    renderAdminProjectList(data || []);
-  }
-
-  function escapeHTML(str) {
-    if (str === null || str === undefined) return '';
-    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-
-  async function loadPublicData() {
-    await Promise.all([loadProfile(), loadSkills(), loadExperiences(), loadEducations(), loadProjects()]);
-  }
-
-  // ================= CONTACT FORM =================
-  $('#contact-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = $('#contact-name').value.trim();
-    const email = $('#contact-email').value.trim();
-    const message = $('#contact-message').value.trim();
-    const { error } = await supabase.from('messages').insert([{ name, email, message }]);
-    if (error) { showToast('ส่งข้อความไม่สำเร็จ', 'error'); console.error(error); return; }
-    showToast('ส่งข้อความสำเร็จ ขอบคุณครับ!');
-    e.target.reset();
-  });
-
-  // ================= ADMIN: AUTH =================
-  async function checkAuthState() {
-    const { data } = await supabase.auth.getSession();
-    if (data.session) {
-      adminLogin.classList.add('hidden');
-      adminDashboard.classList.remove('hidden');
-      loadAdminData();
-    } else {
-      adminLogin.classList.remove('hidden');
-      adminDashboard.classList.add('hidden');
-    }
-  }
-
-  $('#login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = $('#login-email').value.trim();
-    const password = $('#login-password').value;
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) { showToast('เข้าสู่ระบบไม่สำเร็จ: ' + error.message, 'error'); return; }
-    showToast('เข้าสู่ระบบสำเร็จ');
-    checkAuthState();
-  });
-
-  $('#logout-btn').addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    showToast('ออกจากระบบแล้ว');
-    checkAuthState();
-  });
-
-  // ================= ADMIN: TABS =================
-  $$('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      $$('.tab-btn').forEach(b => b.classList.remove('active'));
-      $$('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      $('#tab-' + btn.dataset.tab).classList.add('active');
-    });
-  });
-
-  function loadAdminData() {
-    loadPublicData(); // reuses same fetch + also fills admin lists
-    loadMessages();
-  }
-
-  // ================= ADMIN: PROFILE =================
-  function fillProfileForm(data) {
-    $('#p-name').value = data.full_name || '';
-    $('#p-title').value = data.title || '';
-    $('#p-email').value = data.email || '';
-    $('#p-phone').value = data.phone || '';
-    $('#p-location').value = data.location || '';
-    $('#p-avatar').value = data.avatar_url || '';
-    $('#p-github').value = data.github_url || '';
-    $('#p-linkedin').value = data.linkedin_url || '';
-    $('#p-resume').value = data.resume_url || '';
-    $('#p-bio').value = data.bio || '';
-  }
-
-  $('#profile-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const payload = {
-      id: 1,
-      full_name: $('#p-name').value.trim(),
-      title: $('#p-title').value.trim(),
-      email: $('#p-email').value.trim(),
-      phone: $('#p-phone').value.trim(),
-      location: $('#p-location').value.trim(),
-      avatar_url: $('#p-avatar').value.trim(),
-      github_url: $('#p-github').value.trim(),
-      linkedin_url: $('#p-linkedin').value.trim(),
-      resume_url: $('#p-resume').value.trim(),
-      bio: $('#p-bio').value.trim(),
-      updated_at: new Date().toISOString()
-    };
-    const { error } = await supabase.from('profile').upsert(payload);
-    if (error) { showToast('บันทึกไม่สำเร็จ: ' + error.message, 'error'); return; }
-    showToast('บันทึกโปรไฟล์สำเร็จ');
-    loadProfile();
-  });
-
-  $('#p-avatar-file').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const url = await uploadFile(file, 'avatars');
-    if (url) { $('#p-avatar').value = url; showToast('อัปโหลดรูปสำเร็จ'); }
-  });
-
-  async function uploadFile(file, folder) {
-    try {
-      const path = `${folder}/${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
-      const { error } = await supabase.storage.from('media').upload(path, file, { upsert: true });
-      if (error) throw error;
-      const { data } = supabase.storage.from('media').getPublicUrl(path);
-      return data.publicUrl;
-    } catch (err) {
-      console.error(err);
-      showToast('อัปโหลดไฟล์ไม่สำเร็จ: ' + err.message, 'error');
-      return null;
-    }
-  }
-
-  // ================= ADMIN: GENERIC CRUD HELPER =================
-  async function deleteRow(table, id, reload) {
-    if (!confirm('ยืนยันการลบ?')) return;
-    const { error } = await supabase.from(table).delete().eq('id', id);
-    if (error) { showToast('ลบไม่สำเร็จ', 'error'); return; }
-    showToast('ลบสำเร็จ');
-    reload();
-  }
-
-  // ---------- Skills ----------
-  function renderAdminSkillList(list) {
-    $('#skill-list').innerHTML = list.map(s => `
-      <div class="item-row">
-        <div class="item-info"><strong>${escapeHTML(s.name)}</strong><span>${escapeHTML(s.category || '')} • ${s.level}%</span></div>
-        <div class="item-actions">
-          <button class="btn-sm btn-edit" data-edit-skill="${s.id}">แก้ไข</button>
-          <button class="btn-sm btn-del" data-del-skill="${s.id}">ลบ</button>
-        </div>
-      </div>`).join('') || '<p style="color:var(--muted);">ยังไม่มีข้อมูล</p>';
-
-    $$('[data-edit-skill]').forEach(btn => btn.addEventListener('click', () => {
-      const item = list.find(s => s.id === btn.dataset.editSkill);
-      $('#skill-id').value = item.id;
-      $('#skill-name').value = item.name;
-      $('#skill-category').value = item.category || '';
-      $('#skill-level').value = item.level;
-      $('#skill-form-title').textContent = 'แก้ไขความสามารถ';
-    }));
-    $$('[data-del-skill]').forEach(btn => btn.addEventListener('click', () => deleteRow('skills', btn.dataset.delSkill, loadSkills)));
-  }
-
-  $('#skill-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = $('#skill-id').value;
-    const payload = { name: $('#skill-name').value.trim(), category: $('#skill-category').value.trim(), level: Number($('#skill-level').value) };
-    const { error } = id ? await supabase.from('skills').update(payload).eq('id', id) : await supabase.from('skills').insert([payload]);
-    if (error) { showToast('บันทึกไม่สำเร็จ', 'error'); return; }
-    showToast('บันทึกสำเร็จ');
-    e.target.reset(); $('#skill-id').value=''; $('#skill-form-title').textContent = 'เพิ่มความสามารถ';
-    loadSkills();
-  });
-
-  // ---------- Experience ----------
-  function renderAdminExperienceList(list) {
-    $('#experience-list').innerHTML = list.map(x => `
-      <div class="item-row">
-        <div class="item-info"><strong>${escapeHTML(x.position)} @ ${escapeHTML(x.company)}</strong><span>${escapeHTML(x.start_date||'')} - ${escapeHTML(x.end_date||'')}</span></div>
-        <div class="item-actions">
-          <button class="btn-sm btn-edit" data-edit-exp="${x.id}">แก้ไข</button>
-          <button class="btn-sm btn-del" data-del-exp="${x.id}">ลบ</button>
-        </div>
-      </div>`).join('') || '<p style="color:var(--muted);">ยังไม่มีข้อมูล</p>';
-
-    $$('[data-edit-exp]').forEach(btn => btn.addEventListener('click', () => {
-      const item = list.find(x => x.id === btn.dataset.editExp);
-      $('#exp-id').value = item.id;
-      $('#exp-company').value = item.company || '';
-      $('#exp-position').value = item.position || '';
-      $('#exp-start').value = item.start_date || '';
-      $('#exp-end').value = item.end_date || '';
-      $('#exp-desc').value = item.description || '';
-      $('#exp-form-title').textContent = 'แก้ไขประสบการณ์';
-    }));
-    $$('[data-del-exp]').forEach(btn => btn.addEventListener('click', () => deleteRow('experiences', btn.dataset.delExp, loadExperiences)));
-  }
-
-  $('#experience-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = $('#exp-id').value;
-    const payload = {
-      company: $('#exp-company').value.trim(), position: $('#exp-position').value.trim(),
-      start_date: $('#exp-start').value.trim(), end_date: $('#exp-end').value.trim(),
-      description: $('#exp-desc').value.trim()
-    };
-    const { error } = id ? await supabase.from('experiences').update(payload).eq('id', id) : await supabase.from('experiences').insert([payload]);
-    if (error) { showToast('บันทึกไม่สำเร็จ', 'error'); return; }
-    showToast('บันทึกสำเร็จ');
-    e.target.reset(); $('#exp-id').value=''; $('#exp-form-title').textContent = 'เพิ่มประสบการณ์';
-    loadExperiences();
-  });
-
-  // ---------- Education ----------
-  function renderAdminEducationList(list) {
-    $('#education-list').innerHTML = list.map(x => `
-      <div class="item-row">
-        <div class="item-info"><strong>${escapeHTML(x.degree||'')} ${escapeHTML(x.field||'')}</strong><span>${escapeHTML(x.school||'')}</span></div>
-        <div class="item-actions">
-          <button class="btn-sm btn-edit" data-edit-edu="${x.id}">แก้ไข</button>
-          <button class="btn-sm btn-del" data-del-edu="${x.id}">ลบ</button>
-        </div>
-      </div>`).join('') || '<p style="color:var(--muted);">ยังไม่มีข้อมูล</p>';
-
-    $$('[data-edit-edu]').forEach(btn => btn.addEventListener('click', () => {
-      const item = list.find(x => x.id === btn.dataset.editEdu);
-      $('#edu-id').value = item.id;
-      $('#edu-school').value = item.school || '';
-      $('#edu-degree').value = item.degree || '';
-      $('#edu-field').value = item.field || '';
-      $('#edu-start').value = item.start_date || '';
-      $('#edu-end').value = item.end_date || '';
-      $('#edu-desc').value = item.description || '';
-      $('#edu-form-title').textContent = 'แก้ไขการศึกษา';
-    }));
-    $$('[data-del-edu]').forEach(btn => btn.addEventListener('click', () => deleteRow('educations', btn.dataset.delEdu, loadEducations)));
-  }
-
-  $('#education-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = $('#edu-id').value;
-    const payload = {
-      school: $('#edu-school').value.trim(), degree: $('#edu-degree').value.trim(),
-      field: $('#edu-field').value.trim(), start_date: $('#edu-start').value.trim(),
-      end_date: $('#edu-end').value.trim(), description: $('#edu-desc').value.trim()
-    };
-    const { error } = id ? await supabase.from('educations').update(payload).eq('id', id) : await supabase.from('educations').insert([payload]);
-    if (error) { showToast('บันทึกไม่สำเร็จ', 'error'); return; }
-    showToast('บันทึกสำเร็จ');
-    e.target.reset(); $('#edu-id').value=''; $('#edu-form-title').textContent = 'เพิ่มการศึกษา';
-    loadEducations();
-  });
-
-  // ---------- Projects ----------
-  function renderAdminProjectList(list) {
-    $('#project-list').innerHTML = list.map(x => `
-      <div class="item-row">
-        <div class="item-info"><strong>${escapeHTML(x.title)}</strong><span>${escapeHTML(x.tags||'')}</span></div>
-        <div class="item-actions">
-          <button class="btn-sm btn-edit" data-edit-proj="${x.id}">แก้ไข</button>
-          <button class="btn-sm btn-del" data-del-proj="${x.id}">ลบ</button>
-        </div>
-      </div>`).join('') || '<p style="color:var(--muted);">ยังไม่มีข้อมูล</p>';
-
-    $$('[data-edit-proj]').forEach(btn => btn.addEventListener('click', () => {
-      const item = list.find(x => x.id === btn.dataset.editProj);
-      $('#proj-id').value = item.id;
-      $('#proj-title').value = item.title || '';
-      $('#proj-url').value = item.project_url || '';
-      $('#proj-tags').value = item.tags || '';
-      $('#proj-image').value = item.image_url || '';
-      $('#proj-desc').value = item.description || '';
-      $('#proj-form-title').textContent = 'แก้ไขผลงาน';
-    }));
-    $$('[data-del-proj]').forEach(btn => btn.addEventListener('click', () => deleteRow('projects', btn.dataset.delProj, loadProjects)));
-  }
-
-  $('#proj-image-file').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const url = await uploadFile(file, 'projects');
-    if (url) { $('#proj-image').value = url; showToast('อัปโหลดรูปสำเร็จ'); }
-  });
-
-  $('#project-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = $('#proj-id').value;
-    const payload = {
-      title: $('#proj-title').value.trim(), project_url: $('#proj-url').value.trim(),
-      tags: $('#proj-tags').value.trim(), image_url: $('#proj-image').value.trim(),
-      description: $('#proj-desc').value.trim()
-    };
-    const { error } = id ? await supabase.from('projects').update(payload).eq('id', id) : await supabase.from('projects').insert([payload]);
-    if (error) { showToast('บันทึกไม่สำเร็จ', 'error'); return; }
-    showToast('บันทึกสำเร็จ');
-    e.target.reset(); $('#proj-id').value=''; $('#proj-form-title').textContent = 'เพิ่มผลงาน';
-    loadProjects();
-  });
-
-  // ---------- Messages ----------
-  async function loadMessages() {
-    const { data, error } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
-    if (error) { console.error(error); return; }
-    $('#message-list').innerHTML = (data || []).map(m => `
-      <div class="item-row">
-        <div class="item-info">
-          <strong>${escapeHTML(m.name)} ${m.is_read ? '' : '🟢'}</strong>
-          <span>${escapeHTML(m.email)} • ${new Date(m.created_at).toLocaleString('th-TH')}</span>
-          <p style="margin:.4rem 0 0; font-size:.85rem; color:var(--text);">${escapeHTML(m.message)}</p>
-        </div>
-        <div class="item-actions">
-          ${!m.is_read ? `<button class="btn-sm btn-edit" data-read-msg="${m.id}">อ่านแล้ว</button>` : ''}
-          <button class="btn-sm btn-del" data-del-msg="${m.id}">ลบ</button>
-        </div>
-      </div>`).join('') || '<p style="color:var(--muted);">ยังไม่มีข้อความ</p>';
-
-    $$('[data-read-msg]').forEach(btn => btn.addEventListener('click', async () => {
-      await supabase.from('messages').update({ is_read: true }).eq('id', btn.dataset.readMsg);
-      loadMessages();
-    }));
-    $$('[data-del-msg]').forEach(btn => btn.addEventListener('click', () => deleteRow('messages', btn.dataset.delMsg, loadMessages)));
-  }
-
-  // ================= INIT =================
-  (async function init() {
-    try {
-      await loadPublicData();
-    } catch (err) {
-      console.error(err);
-      showToast('โหลดข้อมูลไม่สำเร็จ ตรวจสอบการตั้งค่า Supabase', 'error');
-    } finally {
-      loader.style.opacity = '0';
-      setTimeout(() => loader.classList.add('hidden'), 400);
-      route();
-    }
-  })();
-});
-</script>
 </body>
+
 </html>
