@@ -16,53 +16,115 @@
   tailwind.config = {
     theme: {
       extend: {
-        fontFamily: { sans: ['Poppins', 'Noto Sans Thai', 'sans-serif'] },
-        colors: { 
-          tech: {
-          dark: '#0a0f0a',   // สีพื้นหลังหลักของทั้งเว็บ (ดำ/น้ำเงินเข้ม)
-          card: '#132018',   // สีพื้นหลังกล่อง/การ์ดต่างๆ
-          accent: '#22c55e', // สีเน้น (ปุ่ม, ไอคอน, highlight) ← สีนี้สำคัญที่สุด
-        }
+        fontFamily: { sans: ['Poppins', 'Noto Sans Thai', 'sans-serif'] }
       }
     }
   }
-}
 </script>
 
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
 <style>
+  /* ====================================================
+     🎨 THEME COLOR VARIABLES - แก้ตรงนี้เพื่อเปลี่ยนสีทั้งเว็บ!
+     dark   = สีพื้นหลังหลัก
+     card   = สีพื้นหลังกล่อง/การ์ด
+     accent = สีเน้น (ปุ่ม, ไอคอน, highlight)
+     accent-rgb = ค่า RGB ของ accent (ใช้ทำ glow/shadow แบบโปร่งแสง)
+     ==================================================== */
+  :root {
+    --color-dark: #0f172a;
+    --color-card: #1e293b;
+    --color-accent: #38bdf8;
+    --color-accent-rgb: 56, 189, 248;
+  }
+
+  * { transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
+
   ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-track { background: var(--color-dark); }
   ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: #475569; }
   html { scroll-behavior: smooth; }
 
+  body { background-color: var(--color-dark); }
+
+  /* ---- Utility classes ที่ผูกกับตัวแปรธีม ---- */
+  .theme-dark-bg { background-color: var(--color-dark); }
+  .theme-card-bg { background-color: var(--color-card); }
+  .theme-accent-text { color: var(--color-accent); }
+  .theme-accent-bg { background-color: var(--color-accent); }
+  .theme-accent-border { border-color: var(--color-accent); }
+  .hover-accent-text:hover { color: var(--color-accent); }
+  .hover-accent-border:hover { border-color: var(--color-accent); }
+  .hover-accent-border-soft:hover { border-color: rgba(var(--color-accent-rgb), 0.5); }
+
+  .theme-dot { background-color: var(--color-accent); box-shadow: 0 0 10px rgba(var(--color-accent-rgb), 0.5); }
+  .theme-glow-input:focus { border-color: var(--color-accent) !important; box-shadow: 0 0 0 1px var(--color-accent); outline: none; }
+
+  .divider-accent { height: 4px; flex: 1 1 auto; border-radius: 9999px; opacity: .3; background: linear-gradient(to right, var(--color-accent), transparent); }
+
+  .btn-accent { background-color: var(--color-accent); color: #0f172a; box-shadow: 0 0 15px rgba(var(--color-accent-rgb), .3); transition: filter .2s, box-shadow .2s; }
+  .btn-accent:hover { filter: brightness(1.12); box-shadow: 0 0 25px rgba(var(--color-accent-rgb), .5); }
+
+  .btn-outline-accent { background-color: #1e293b; border: 1px solid #334155; color: #cbd5e1; }
+  .btn-outline-accent:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+  .btn-send { background-color: #334155; color: #fff; transition: background-color .2s, color .2s, box-shadow .2s; }
+  .btn-send:hover { background-color: var(--color-accent); color: #0f172a; box-shadow: 0 0 15px rgba(var(--color-accent-rgb), .4); }
+
+  .portfolio-item { transition: border-color .3s, box-shadow .3s; }
+  .portfolio-item:hover { border-color: var(--color-accent); box-shadow: 0 10px 25px rgba(var(--color-accent-rgb), .15); }
+
+  /* Nav */
+  .nav-btn { color: #94a3b8; border-bottom: 2px solid transparent; padding-bottom: .25rem; transition: color .2s, border-color .2s; background: none; }
+  .nav-btn:hover { color: #fff; }
+  .nav-btn.active-nav { color: var(--color-accent); border-color: var(--color-accent); }
+
+  /* Page sections */
   .page-section { display: none; animation: fadeIn .4s ease-in-out; }
   .page-section.active { display: block; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
 
-  .skill-bar-fill { width: 0% !important; transition: width 1.2s ease-out; }
+  /* Skill bars */
+  .skill-bar-fill { width: 0% !important; transition: width 1.2s ease-out; background-color: var(--color-accent); box-shadow: 0 0 10px rgba(var(--color-accent-rgb), .5); }
   .skill-bar-fill.animated { width: var(--target-width) !important; }
 
+  /* Reveal on scroll */
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease-out, transform .6s ease-out; }
   .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-  /* ซ่อน scrollbar สำหรับเมนูแนวนอนบนมือถือ */
+  /* ซ่อน scrollbar เมนูแนวนอน */
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+  /* Toast */
   #toast-container { position: fixed; top: 1.25rem; right: 1.25rem; left: 1.25rem; z-index: 9999; display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; }
   .toast { animation: slideIn .3s ease-out, fadeOutToast .3s ease-in 2.7s forwards; max-width: 320px; }
   @keyframes slideIn { from{transform:translateX(120%);opacity:0;} to{transform:translateX(0);opacity:1;} }
   @keyframes fadeOutToast { to{opacity:0;transform:translateX(30px);} }
 
+  /* Modal */
   .modal-overlay { transition: opacity .3s ease; }
   .modal-content { transition: transform .3s ease, opacity .3s ease; }
 
-  #backToTop { transition: opacity .3s ease, transform .3s ease; }
+  /* Back to top */
+  #backToTop { transition: opacity .3s ease, transform .3s ease; background-color: var(--color-accent); color: #0f172a; }
   #backToTop.hidden-btn { opacity: 0; transform: translateY(20px); pointer-events: none; }
+  #backToTop:hover { filter: brightness(1.1); }
+
+  /* Theme switcher */
+  #themeToggleBtn { background-color: var(--color-accent); color: #0f172a; transition: filter .2s, transform .2s; }
+  #themeToggleBtn:hover { filter: brightness(1.1); transform: rotate(20deg); }
+  #themePanel {
+    transform-origin: bottom left;
+    transition: transform .25s ease, opacity .25s ease;
+  }
+  #themePanel.closed { transform: scale(0.85) translateY(10px); opacity: 0; pointer-events: none; }
+  .swatch-btn { width: 2.5rem; height: 2.5rem; border-radius: .75rem; border: 2px solid transparent; cursor: pointer; transition: transform .15s, border-color .15s; }
+  .swatch-btn:hover { transform: scale(1.1); }
+  .swatch-btn.selected { border-color: #fff; box-shadow: 0 0 0 2px var(--color-accent); }
 
   .cursor-blink { animation: blink 1s step-end infinite; }
   @keyframes blink { 50%{opacity:0;} }
@@ -72,61 +134,72 @@
   .error-msg.show { display: block; }
 
   @media print {
-    aside, nav, #backToTop, .no-print, #toast-container { display: none !important; }
+    aside, nav, #backToTop, #themeToggleBtn, #themePanel, .no-print, #toast-container { display: none !important; }
     body { background: #fff !important; color: #000 !important; }
   }
 </style>
 </head>
 
-<body class="bg-tech-dark text-slate-300 antialiased min-h-screen py-6 md:py-10">
+<body class="text-slate-300 antialiased min-h-screen py-6 md:py-10">
 
 <div id="toast-container" aria-live="polite"></div>
 
-<button id="backToTop" aria-label="กลับขึ้นด้านบน" class="hidden-btn fixed bottom-6 right-6 z-40 bg-tech-accent text-slate-900 w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-300">
+<!-- ================= THEME SWITCHER ================= -->
+<div class="fixed bottom-6 left-6 z-40 no-print">
+  <div id="themePanel" class="closed absolute bottom-16 left-0 theme-card-bg border border-slate-700 rounded-2xl p-4 shadow-2xl w-56">
+    <p class="text-xs text-slate-400 uppercase tracking-wider mb-3">เลือกสีธีม</p>
+    <div id="swatchContainer" class="grid grid-cols-4 gap-3"></div>
+  </div>
+  <button id="themeToggleBtn" aria-label="เปลี่ยนสีธีม" aria-expanded="false" class="w-12 h-12 rounded-full shadow-lg flex items-center justify-center">
+    <ion-icon name="color-palette-outline" class="text-2xl"></ion-icon>
+  </button>
+</div>
+
+<button id="backToTop" aria-label="กลับขึ้นด้านบน" class="hidden-btn fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white/30">
   <ion-icon name="arrow-up-outline" class="text-2xl"></ion-icon>
 </button>
 
 <!-- Portfolio Modal -->
 <div id="portfolioModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4">
   <div class="modal-overlay absolute inset-0 bg-black/70" data-close-modal></div>
-  <div class="modal-content relative bg-tech-card border border-slate-700 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl">
+  <div class="modal-content relative theme-card-bg border border-slate-700 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl">
     <button data-close-modal aria-label="ปิด" class="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-slate-900/70 text-white flex items-center justify-center hover:bg-red-500 transition-colors">
       <ion-icon name="close-outline" class="text-xl"></ion-icon>
     </button>
     <img id="modalImg" src="" alt="" class="w-full h-56 object-cover">
     <div class="p-6">
-      <p id="modalCategory" class="text-tech-accent text-sm font-medium mb-1"></p>
+      <p id="modalCategory" class="theme-accent-text text-sm font-medium mb-1"></p>
       <h3 id="modalTitle" class="text-xl font-semibold text-white mb-3"></h3>
       <p id="modalDesc" class="text-slate-400 text-sm leading-relaxed"></p>
     </div>
   </div>
 </div>
 
-<!-- Container ที่ซ่อนไว้สำหรับโหลดไฟล์ PDF เพื่อสั่งพิมพ์ -->
+<!-- Container สำหรับโหลด PDF เพื่อสั่งพิมพ์ -->
 <div id="printFrameContainer" style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true"></div>
 
 <main class="max-w-6xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
 
   <!-- ================= SIDEBAR ================= -->
-  <aside class="bg-tech-card rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-700/50 lg:col-span-1 h-fit lg:sticky lg:top-10 z-20">
+  <aside class="theme-card-bg rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-700/50 lg:col-span-1 h-fit lg:sticky lg:top-10 z-20">
 
     <div class="flex flex-col items-center text-center pb-6 border-b border-slate-700">
       <figure class="w-28 h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden mb-4 border-4 border-slate-700 shadow-lg relative group">
-        <img src="./assets/images/Ain.jpg" alt="Rachod Medacha" class="w-full h-full object-cover transition duration-300 group-hover:scale-110" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Rachod+Medacha&background=38bdf8&color=fff&size=200'">
+        <img src="./assets/images/profile.jpg" alt="Rachod Medacha" class="w-full h-full object-cover transition duration-300 group-hover:scale-110" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Rachod+Medacha&background=38bdf8&color=fff&size=200'">
       </figure>
       <h1 class="text-xl md:text-2xl font-semibold text-white mb-2">Rachod Medacha</h1>
-      <span class="bg-slate-800 text-tech-accent px-4 py-1.5 rounded-lg text-sm font-medium tracking-wide shadow-inner min-h-[2rem] inline-flex items-center">
+      <span class="bg-slate-800 theme-accent-text px-4 py-1.5 rounded-lg text-sm font-medium tracking-wide shadow-inner min-h-[2rem] inline-flex items-center">
         <span id="typingText"></span><span class="cursor-blink">|</span>
       </span>
 
       <div class="flex gap-3 mt-4">
-        <a href="mailto:intelgeneral.life@gmail.com" aria-label="Email" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-tech-accent hover:text-slate-900 transition-colors">
+        <a href="mailto:intelgeneral.life@gmail.com" aria-label="Email" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:theme-accent-bg transition-colors hover-accent-text">
           <ion-icon name="mail-outline"></ion-icon>
         </a>
-        <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-tech-accent hover:text-slate-900 transition-colors">
+        <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover-accent-text transition-colors">
           <ion-icon name="logo-linkedin"></ion-icon>
         </a>
-        <a href="#" aria-label="GitHub" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-tech-accent hover:text-slate-900 transition-colors">
+        <a href="#" aria-label="GitHub" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center hover-accent-text transition-colors">
           <ion-icon name="logo-github"></ion-icon>
         </a>
       </div>
@@ -134,25 +207,25 @@
 
     <ul class="pt-6 space-y-5">
       <li class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 theme-accent-text flex items-center justify-center shadow-md shrink-0">
           <ion-icon name="mail-outline" class="text-xl"></ion-icon>
         </div>
         <div class="overflow-hidden">
           <p class="text-xs text-slate-400 uppercase tracking-wider mb-0.5">Email</p>
-          <a href="mailto:intelgeneral.life@gmail.com" class="text-sm text-slate-200 hover:text-tech-accent transition-colors block leading-tight break-all">intelgeneral.life@gmail.com</a>
+          <a href="mailto:intelgeneral.life@gmail.com" class="text-sm text-slate-200 hover-accent-text transition-colors block leading-tight break-all">intelgeneral.life@gmail.com</a>
         </div>
       </li>
       <li class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 theme-accent-text flex items-center justify-center shadow-md shrink-0">
           <ion-icon name="phone-portrait-outline" class="text-xl"></ion-icon>
         </div>
         <div>
           <p class="text-xs text-slate-400 uppercase tracking-wider mb-0.5">Phone</p>
-          <a href="tel:+66612566898" class="text-sm text-slate-200 hover:text-tech-accent transition-colors">+66 612566898</a>
+          <a href="tel:+66612566898" class="text-sm text-slate-200 hover-accent-text transition-colors">+66 612566898</a>
         </div>
       </li>
       <li class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 theme-accent-text flex items-center justify-center shadow-md shrink-0">
           <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
         </div>
         <div>
@@ -161,7 +234,7 @@
         </div>
       </li>
       <li class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+        <div class="w-10 h-10 rounded-lg bg-slate-800 theme-accent-text flex items-center justify-center shadow-md shrink-0">
           <ion-icon name="location-outline" class="text-xl"></ion-icon>
         </div>
         <div>
@@ -172,11 +245,11 @@
     </ul>
 
     <div class="mt-8 space-y-3">
-      <a href="./assets/docs/Rachod_Medacha_Resume.pdf" download class="w-full flex items-center justify-center gap-3 bg-tech-accent text-slate-900 py-3 rounded-xl text-sm font-semibold hover:bg-sky-400 transition-all shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)]">
+      <a href="./assets/docs/Rachod_Medacha_Resume.pdf" download class="btn-accent w-full flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-semibold">
         <ion-icon name="download-outline" class="text-2xl"></ion-icon>
         <span>Download Resume</span>
       </a>
-      <button id="printBtn" type="button" class="w-full flex items-center justify-center gap-3 bg-slate-800 border border-slate-700 text-slate-200 py-3 rounded-xl text-sm font-semibold hover:border-tech-accent hover:text-tech-accent transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+      <button id="printBtn" type="button" class="btn-outline-accent w-full flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-60 disabled:cursor-not-allowed">
         <ion-icon name="print-outline" id="printIcon" class="text-xl"></ion-icon>
         <span id="printBtnText">Print Resume</span>
       </button>
@@ -184,15 +257,14 @@
   </aside>
 
   <!-- ================= MAIN CONTENT ================= -->
-  <div class="bg-tech-card rounded-3xl shadow-2xl border border-slate-700/50 lg:col-span-3 overflow-hidden relative">
+  <div class="theme-card-bg rounded-3xl shadow-2xl border border-slate-700/50 lg:col-span-3 overflow-hidden relative">
 
-    <!-- Navbar: เมนูแนวนอนเดียวกันทั้ง Desktop และ Mobile (เลื่อนได้บนจอเล็ก) -->
     <nav class="bg-slate-800/80 border-b border-slate-700 px-4 md:px-8 py-4 backdrop-blur-md sticky top-0 z-30">
       <ul class="flex gap-4 md:gap-8 text-sm font-medium overflow-x-auto no-scrollbar whitespace-nowrap">
-        <li><button class="nav-btn text-tech-accent border-b-2 border-tech-accent pb-1 transition-colors focus:outline-none" data-target="about">About</button></li>
-        <li><button class="nav-btn text-slate-400 hover:text-white border-b-2 border-transparent pb-1 transition-colors focus:outline-none" data-target="resume">Resume</button></li>
-        <li><button class="nav-btn text-slate-400 hover:text-white border-b-2 border-transparent pb-1 transition-colors focus:outline-none" data-target="portfolio">Portfolio</button></li>
-        <li><button class="nav-btn text-slate-400 hover:text-white border-b-2 border-transparent pb-1 transition-colors focus:outline-none" data-target="contact">Contact</button></li>
+        <li><button class="nav-btn active-nav" data-target="about">About</button></li>
+        <li><button class="nav-btn" data-target="resume">Resume</button></li>
+        <li><button class="nav-btn" data-target="portfolio">Portfolio</button></li>
+        <li><button class="nav-btn" data-target="contact">Contact</button></li>
       </ul>
     </nav>
 
@@ -203,29 +275,29 @@
         <div>
           <div class="flex items-center gap-4 mb-6">
             <h2 class="text-2xl md:text-3xl font-semibold text-white">About Me</h2>
-            <div class="h-1 flex-1 bg-gradient-to-r from-tech-accent to-transparent rounded-full opacity-30"></div>
+            <div class="divider-accent"></div>
           </div>
           <div class="text-slate-300 leading-relaxed space-y-4">
             <p>ปัจจุบันเป็นวิศวกรรักษาความปลอดภัยระบบจากกรุงเทพมหานคร ประเทศไทย ทำงานในตำแหน่งวิศวกรรักษาความปลอดภัยระบบ, ความปลอดภัยเครือข่าย, Virtual Machine (VMWARE, Proxmox, Hyper-V) สนใจโซลูชัน AI เพื่อเพิ่มประสิทธิภาพการทำงาน</p>
-            <p class="border-l-4 border-tech-accent pl-4 text-slate-400 italic">"กำลังมองหาความท้าทายและการประเมินตนเองในตำแหน่งใหม่เพื่อเป้าหมายที่กว้างขึ้น"</p>
+            <p class="border-l-4 theme-accent-border pl-4 text-slate-400 italic">"กำลังมองหาความท้าทายและการประเมินตนเองในตำแหน่งใหม่เพื่อเป้าหมายที่กว้างขึ้น"</p>
           </div>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover:border-tech-accent/50 transition-colors">
-            <p class="text-3xl font-bold text-tech-accent" data-count="11">0</p>
+          <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover-accent-border-soft transition-colors">
+            <p class="text-3xl font-bold theme-accent-text" data-count="11">0</p>
             <p class="text-xs text-slate-400 mt-1 uppercase tracking-wide">ปีประสบการณ์</p>
           </div>
-          <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover:border-tech-accent/50 transition-colors">
-            <p class="text-3xl font-bold text-tech-accent" data-count="3">0</p>
+          <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover-accent-border-soft transition-colors">
+            <p class="text-3xl font-bold theme-accent-text" data-count="3">0</p>
             <p class="text-xs text-slate-400 mt-1 uppercase tracking-wide">บริษัทที่ทำงาน</p>
           </div>
-          <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover:border-tech-accent/50 transition-colors">
-            <p class="text-3xl font-bold text-tech-accent" data-count="800">0</p>
+          <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover-accent-border-soft transition-colors">
+            <p class="text-3xl font-bold theme-accent-text" data-count="800">0</p>
             <p class="text-xs text-slate-400 mt-1 uppercase tracking-wide">ผู้ใช้งานที่ดูแล</p>
           </div>
-          <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover:border-tech-accent/50 transition-colors">
-            <p class="text-3xl font-bold text-tech-accent" data-count="2">0</p>
+          <div class="reveal bg-slate-800 rounded-2xl p-5 text-center border border-slate-700 hover-accent-border-soft transition-colors">
+            <p class="text-3xl font-bold theme-accent-text" data-count="2">0</p>
             <p class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Certificates</p>
           </div>
         </div>
@@ -233,23 +305,23 @@
         <div>
           <h3 class="text-xl font-semibold text-white mb-6">What I'm Doing</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-tech-accent/50 transition-colors group shadow-lg">
-              <ion-icon name="server-outline" class="text-4xl text-tech-accent mb-4 group-hover:scale-110 transition-transform"></ion-icon>
+            <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover-accent-border-soft transition-colors group shadow-lg">
+              <ion-icon name="server-outline" class="text-4xl theme-accent-text mb-4 group-hover:scale-110 transition-transform"></ion-icon>
               <h4 class="text-lg font-semibold text-white mb-2">Virtual Machine</h4>
               <p class="text-sm text-slate-400 leading-relaxed">มีความเชี่ยวชาญด้าน Virtualization, Backup และ Cloud Infrastructure ด้วย vCenter VMware, Veeam, Proxmox, Azure, AWS และ Linux OS</p>
             </div>
-            <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-tech-accent/50 transition-colors group shadow-lg">
-              <ion-icon name="logo-windows" class="text-4xl text-tech-accent mb-4 group-hover:scale-110 transition-transform"></ion-icon>
+            <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover-accent-border-soft transition-colors group shadow-lg">
+              <ion-icon name="logo-windows" class="text-4xl theme-accent-text mb-4 group-hover:scale-110 transition-transform"></ion-icon>
               <h4 class="text-lg font-semibold text-white mb-2">Microsoft Admin Tools</h4>
               <p class="text-sm text-slate-400 leading-relaxed">เชี่ยวชาญระบบโครงสร้างพื้นฐานองค์กร (800+ คน) ด้าน Microsoft Entra, Network Services, VMware, Cloud และ SQL/MySQL</p>
             </div>
-            <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-tech-accent/50 transition-colors group shadow-lg">
-              <ion-icon name="shield-checkmark-outline" class="text-4xl text-tech-accent mb-4 group-hover:scale-110 transition-transform"></ion-icon>
+            <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover-accent-border-soft transition-colors group shadow-lg">
+              <ion-icon name="shield-checkmark-outline" class="text-4xl theme-accent-text mb-4 group-hover:scale-110 transition-transform"></ion-icon>
               <h4 class="text-lg font-semibold text-white mb-2">Network & Security</h4>
               <p class="text-sm text-slate-400 leading-relaxed">เข้าใจระบบ Router, Switch, Firewall, AP และโซลูชัน Backup, Cloud Storage, DR Site และ IT Contingency Plan</p>
             </div>
-            <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-tech-accent/50 transition-colors group shadow-lg">
-              <ion-icon name="code-working-outline" class="text-4xl text-tech-accent mb-4 group-hover:scale-110 transition-transform"></ion-icon>
+            <div class="reveal bg-slate-800 p-6 rounded-2xl border border-slate-700 hover-accent-border-soft transition-colors group shadow-lg">
+              <ion-icon name="code-working-outline" class="text-4xl theme-accent-text mb-4 group-hover:scale-110 transition-transform"></ion-icon>
               <h4 class="text-lg font-semibold text-white mb-2">Automation & Low-code</h4>
               <p class="text-sm text-slate-400 leading-relaxed">เชี่ยวชาญ PowerShell, Power Automate, AppSheet, AppScript, PowerApps, Python, n8n และ AI Agent</p>
             </div>
@@ -261,25 +333,25 @@
       <section id="resume" class="page-section space-y-12">
         <div class="flex items-center gap-4 mb-8">
           <h2 class="text-2xl md:text-3xl font-semibold text-white">Resume</h2>
-          <div class="h-1 flex-1 bg-gradient-to-r from-tech-accent to-transparent rounded-full opacity-30"></div>
+          <div class="divider-accent"></div>
         </div>
 
         <div>
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+            <div class="w-10 h-10 rounded-lg bg-slate-800 theme-accent-text flex items-center justify-center shadow-md shrink-0">
               <ion-icon name="book-outline" class="text-xl"></ion-icon>
             </div>
             <h3 class="text-xl font-semibold text-white">Education & Training</h3>
           </div>
           <div class="border-l-2 border-slate-700 ml-5 pl-8 py-2 space-y-8">
             <div class="relative reveal">
-              <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-tech-accent shadow-[0_0_10px_rgba(56,189,248,0.5)] border-4 border-tech-card"></div>
+              <div class="theme-dot absolute -left-[39px] top-1 w-4 h-4 rounded-full border-4 theme-card-bg" style="border-color: var(--color-card);"></div>
               <h4 class="text-lg font-semibold text-white">มหาวิทยาลัย เกษมบัณฑิต (Kasembundit University)</h4>
-              <span class="text-tech-accent text-sm font-medium mb-2 block">2005 – 2013</span>
+              <span class="theme-accent-text text-sm font-medium mb-2 block">2005 – 2013</span>
               <p class="text-slate-400 text-sm">ระดับการศึกษา: ปริญญาตรี <br> วุฒิการศึกษา: วท.บ. <br> สาขา: เทคโนโลยีสารสนเทศ</p>
             </div>
             <div class="relative reveal">
-              <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4 border-tech-card"></div>
+              <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4" style="border-color: var(--color-card);"></div>
               <h4 class="text-lg font-semibold text-white">ITCert</h4>
               <p class="text-slate-400 text-sm mt-1">- Implement Install Windows Server 2012, 2016 Administrator <br>- Implement Install Windows Server 2012, 2016 Remote desktop Service</p>
             </div>
@@ -288,21 +360,21 @@
 
         <div>
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+            <div class="w-10 h-10 rounded-lg bg-slate-800 theme-accent-text flex items-center justify-center shadow-md shrink-0">
               <ion-icon name="ribbon-outline" class="text-xl"></ion-icon>
             </div>
             <h3 class="text-xl font-semibold text-white">Certifications</h3>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="reveal bg-slate-800 p-5 rounded-2xl border border-slate-700 flex items-center gap-4">
-              <ion-icon name="medal-outline" class="text-3xl text-tech-accent shrink-0"></ion-icon>
+              <ion-icon name="medal-outline" class="text-3xl theme-accent-text shrink-0"></ion-icon>
               <div>
                 <h4 class="text-white font-medium">Windows Server 2012/2016 Administrator</h4>
                 <p class="text-xs text-slate-400">ITCert Certification</p>
               </div>
             </div>
             <div class="reveal bg-slate-800 p-5 rounded-2xl border border-slate-700 flex items-center gap-4">
-              <ion-icon name="medal-outline" class="text-3xl text-tech-accent shrink-0"></ion-icon>
+              <ion-icon name="medal-outline" class="text-3xl theme-accent-text shrink-0"></ion-icon>
               <div>
                 <h4 class="text-white font-medium">Remote Desktop Services Implementation</h4>
                 <p class="text-xs text-slate-400">ITCert Certification</p>
@@ -313,16 +385,16 @@
 
         <div>
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg bg-slate-800 text-tech-accent flex items-center justify-center shadow-md shrink-0">
+            <div class="w-10 h-10 rounded-lg bg-slate-800 theme-accent-text flex items-center justify-center shadow-md shrink-0">
               <ion-icon name="briefcase-outline" class="text-xl"></ion-icon>
             </div>
             <h3 class="text-xl font-semibold text-white">Experience</h3>
           </div>
           <div class="border-l-2 border-slate-700 ml-5 pl-8 py-2 space-y-10">
             <div class="relative group reveal">
-              <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-tech-accent shadow-[0_0_10px_rgba(56,189,248,0.5)] border-4 border-tech-card group-hover:bg-white transition-colors"></div>
-              <h4 class="text-lg font-semibold text-white group-hover:text-tech-accent transition-colors">System Security Engineer</h4>
-              <span class="text-tech-accent text-sm font-medium mb-3 block">Kwe-Kintetsu World Express (Thailand) | Oct 2023 - Current</span>
+              <div class="theme-dot absolute -left-[39px] top-1 w-4 h-4 rounded-full border-4" style="border-color: var(--color-card);"></div>
+              <h4 class="text-lg font-semibold text-white group-hover:theme-accent-text transition-colors">System Security Engineer</h4>
+              <span class="theme-accent-text text-sm font-medium mb-3 block">Kwe-Kintetsu World Express (Thailand) | Oct 2023 - Current</span>
               <ul class="text-slate-400 text-sm space-y-2 list-disc list-outside ml-4">
                 <li>ดูแลทีมงานและหน่วยงาน พร้อมทั้งจัดการระบบและความปลอดภัยสำหรับองค์กร (>800 คน)</li>
                 <li>จัดการ Microsoft Entra ID, DHCP, DNS, WSUS, Group Policy Management, Global Protect</li>
@@ -332,9 +404,9 @@
               </ul>
             </div>
             <div class="relative group reveal">
-              <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4 border-tech-card group-hover:bg-tech-accent transition-colors"></div>
-              <h4 class="text-lg font-semibold text-white group-hover:text-tech-accent transition-colors">Senior IT</h4>
-              <span class="text-tech-accent text-sm font-medium mb-3 block">Essilorluxottica Thailand | June 2018 - Oct 2023</span>
+              <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4" style="border-color: var(--color-card);"></div>
+              <h4 class="text-lg font-semibold text-white group-hover:theme-accent-text transition-colors">Senior IT</h4>
+              <span class="theme-accent-text text-sm font-medium mb-3 block">Essilorluxottica Thailand | June 2018 - Oct 2023</span>
               <ul class="text-slate-400 text-sm space-y-2 list-disc list-outside ml-4">
                 <li>ดูแลทีมงาน 3 หน่วยงาน (TH, KHM, VN) และใช้ระบบ Services Desk</li>
                 <li>จัดการ Active Directory, DHCP, DNS, Group Policy (พนักงาน >200 คน)</li>
@@ -343,9 +415,9 @@
               </ul>
             </div>
             <div class="relative group reveal">
-              <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4 border-tech-card group-hover:bg-tech-accent transition-colors"></div>
-              <h4 class="text-lg font-semibold text-white group-hover:text-tech-accent transition-colors">IT Support</h4>
-              <span class="text-tech-accent text-sm font-medium mb-3 block">V-oneasset | 2013 - 2018</span>
+              <div class="absolute -left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4" style="border-color: var(--color-card);"></div>
+              <h4 class="text-lg font-semibold text-white group-hover:theme-accent-text transition-colors">IT Support</h4>
+              <span class="theme-accent-text text-sm font-medium mb-3 block">V-oneasset | 2013 - 2018</span>
               <ul class="text-slate-400 text-sm space-y-2 list-disc list-outside ml-4">
                 <li>ดูแลระบบไอทีธุรกิจในเครือ (อพาร์ตเมนต์ 13 แห่ง, โรงแรม 2 แห่ง)</li>
                 <li>Setup VPN ระหว่างธุรกิจ, วางแผนและติดตั้งระบบ Network, VLAN, CCTV, Fire Alarm</li>
@@ -360,37 +432,37 @@
             <div>
               <div class="flex justify-between text-sm mb-2">
                 <span class="text-white font-medium">Virtual Machine (VMware, Proxmox, Azure)</span>
-                <span class="text-tech-accent">90%</span>
+                <span class="theme-accent-text">90%</span>
               </div>
               <div class="w-full bg-slate-700 rounded-full h-2">
-                <div class="skill-bar-fill bg-tech-accent h-2 rounded-full shadow-[0_0_10px_rgba(56,189,248,0.5)]" style="--target-width: 90%"></div>
+                <div class="skill-bar-fill h-2 rounded-full" style="--target-width: 90%"></div>
               </div>
             </div>
             <div>
               <div class="flex justify-between text-sm mb-2">
                 <span class="text-white font-medium">Microsoft Server Administration Tools</span>
-                <span class="text-tech-accent">70%</span>
+                <span class="theme-accent-text">70%</span>
               </div>
               <div class="w-full bg-slate-700 rounded-full h-2">
-                <div class="skill-bar-fill bg-tech-accent h-2 rounded-full" style="--target-width: 70%"></div>
+                <div class="skill-bar-fill h-2 rounded-full" style="--target-width: 70%"></div>
               </div>
             </div>
             <div>
               <div class="flex justify-between text-sm mb-2">
                 <span class="text-white font-medium">Network & Security (Firewall, Switches)</span>
-                <span class="text-tech-accent">70%</span>
+                <span class="theme-accent-text">70%</span>
               </div>
               <div class="w-full bg-slate-700 rounded-full h-2">
-                <div class="skill-bar-fill bg-tech-accent h-2 rounded-full" style="--target-width: 70%"></div>
+                <div class="skill-bar-fill h-2 rounded-full" style="--target-width: 70%"></div>
               </div>
             </div>
             <div>
               <div class="flex justify-between text-sm mb-2">
                 <span class="text-white font-medium">Automation & Low-code (PowerShell, Python, n8n)</span>
-                <span class="text-tech-accent">70%</span>
+                <span class="theme-accent-text">70%</span>
               </div>
               <div class="w-full bg-slate-700 rounded-full h-2">
-                <div class="skill-bar-fill bg-tech-accent h-2 rounded-full" style="--target-width: 70%"></div>
+                <div class="skill-bar-fill h-2 rounded-full" style="--target-width: 70%"></div>
               </div>
             </div>
           </div>
@@ -401,56 +473,56 @@
       <section id="portfolio" class="page-section space-y-8">
         <div class="flex items-center gap-4 mb-6">
           <h2 class="text-2xl md:text-3xl font-semibold text-white">Portfolio</h2>
-          <div class="h-1 flex-1 bg-gradient-to-r from-tech-accent to-transparent rounded-full opacity-30"></div>
+          <div class="divider-accent"></div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-          <div class="portfolio-item reveal bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700 hover:border-tech-accent transition-all shadow-lg hover:shadow-tech-accent/20"
+          <div class="portfolio-item reveal bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700 shadow-lg"
             data-title="Infrastructure Setup" data-category="Network & Security"
             data-desc="ออกแบบและติดตั้งระบบโครงสร้างพื้นฐานเครือข่าย รวมถึง Firewall, Switch และ Access Point เพื่อรองรับผู้ใช้งานกว่า 800 คนในองค์กร พร้อมทั้งวางแผน Redundancy และ DR Site"
             data-img="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80">
             <div class="h-48 bg-slate-900 overflow-hidden relative">
               <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80" alt="Infrastructure Setup" class="w-full h-full object-cover group-hover:scale-110 group-hover:opacity-50 transition duration-500">
               <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <div class="bg-tech-accent text-slate-900 p-3 rounded-full"><ion-icon name="eye-outline" class="text-2xl"></ion-icon></div>
+                <div class="theme-accent-bg text-slate-900 p-3 rounded-full"><ion-icon name="eye-outline" class="text-2xl"></ion-icon></div>
               </div>
             </div>
             <div class="p-5">
               <h3 class="text-lg font-semibold text-white mb-1">Infrastructure Setup</h3>
-              <p class="text-sm text-tech-accent">Network & Security</p>
+              <p class="text-sm theme-accent-text">Network & Security</p>
             </div>
           </div>
 
-          <div class="portfolio-item reveal bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700 hover:border-tech-accent transition-all shadow-lg hover:shadow-tech-accent/20"
+          <div class="portfolio-item reveal bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700 shadow-lg"
             data-title="Cloud Migration" data-category="Virtual Machine"
             data-desc="ย้ายระบบงานสำคัญขององค์กรขึ้นสู่ระบบ Cloud (Azure/AWS) และ Proxmox พร้อมวางแผน Backup ด้วย Veeam เพื่อเพิ่มความยืดหยุ่นและลดต้นทุนการดูแลระบบ"
             data-img="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80">
             <div class="h-48 bg-slate-900 overflow-hidden relative">
               <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80" alt="Cloud Migration" class="w-full h-full object-cover group-hover:scale-110 group-hover:opacity-50 transition duration-500">
               <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <div class="bg-tech-accent text-slate-900 p-3 rounded-full"><ion-icon name="eye-outline" class="text-2xl"></ion-icon></div>
+                <div class="theme-accent-bg text-slate-900 p-3 rounded-full"><ion-icon name="eye-outline" class="text-2xl"></ion-icon></div>
               </div>
             </div>
             <div class="p-5">
               <h3 class="text-lg font-semibold text-white mb-1">Cloud Migration</h3>
-              <p class="text-sm text-tech-accent">Virtual Machine</p>
+              <p class="text-sm theme-accent-text">Virtual Machine</p>
             </div>
           </div>
 
-          <div class="portfolio-item reveal bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700 hover:border-tech-accent transition-all shadow-lg hover:shadow-tech-accent/20"
+          <div class="portfolio-item reveal bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700 shadow-lg"
             data-title="Automated Workflow" data-category="Automation & Low-code"
             data-desc="พัฒนา Workflow อัตโนมัติด้วย PowerShell, Power Automate และ Python เพื่อลดขั้นตอนงาน IT ซ้ำซ้อน เช่น การสร้างบัญชีผู้ใช้ใหม่ และการตรวจสอบสถานะระบบอัตโนมัติ"
             data-img="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80">
             <div class="h-48 bg-slate-900 overflow-hidden relative">
               <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80" alt="Automated Workflow" class="w-full h-full object-cover group-hover:scale-110 group-hover:opacity-50 transition duration-500">
               <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <div class="bg-tech-accent text-slate-900 p-3 rounded-full"><ion-icon name="eye-outline" class="text-2xl"></ion-icon></div>
+                <div class="theme-accent-bg text-slate-900 p-3 rounded-full"><ion-icon name="eye-outline" class="text-2xl"></ion-icon></div>
               </div>
             </div>
             <div class="p-5">
               <h3 class="text-lg font-semibold text-white mb-1">Automated Workflow</h3>
-              <p class="text-sm text-tech-accent">Automation & Low-code</p>
+              <p class="text-sm theme-accent-text">Automation & Low-code</p>
             </div>
           </div>
 
@@ -461,7 +533,7 @@
       <section id="contact" class="page-section space-y-8">
         <div class="flex items-center gap-4 mb-6">
           <h2 class="text-2xl md:text-3xl font-semibold text-white">Contact</h2>
-          <div class="h-1 flex-1 bg-gradient-to-r from-tech-accent to-transparent rounded-full opacity-30"></div>
+          <div class="divider-accent"></div>
         </div>
 
         <div class="rounded-2xl overflow-hidden border border-slate-700 shadow-lg h-64 md:h-80">
@@ -482,23 +554,23 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <input type="text" id="fullname" name="fullname" placeholder="Full name" required
-                  class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-tech-accent focus:ring-1 focus:ring-tech-accent transition-colors placeholder:text-slate-500">
+                  class="theme-glow-input w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 transition-colors placeholder:text-slate-500">
                 <p class="error-msg" data-error-for="fullname">กรุณากรอกชื่อ-นามสกุล</p>
               </div>
               <div>
                 <input type="email" id="email" name="email" placeholder="Email address" required
-                  class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-tech-accent focus:ring-1 focus:ring-tech-accent transition-colors placeholder:text-slate-500">
+                  class="theme-glow-input w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 transition-colors placeholder:text-slate-500">
                 <p class="error-msg" data-error-for="email">กรุณากรอกอีเมลให้ถูกต้อง</p>
               </div>
             </div>
             <div>
               <textarea id="message" name="message" placeholder="Your Message" required rows="5"
-                class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-tech-accent focus:ring-1 focus:ring-tech-accent transition-colors placeholder:text-slate-500 resize-none"></textarea>
+                class="theme-glow-input w-full bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-3 transition-colors placeholder:text-slate-500 resize-none"></textarea>
               <p class="error-msg" data-error-for="message">กรุณากรอกข้อความ</p>
             </div>
 
             <div class="flex justify-end">
-              <button type="submit" id="submitBtn" class="flex items-center gap-2 bg-slate-700 text-white px-8 py-3 rounded-xl font-medium hover:bg-tech-accent hover:text-slate-900 transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.4)] disabled:opacity-60 disabled:cursor-not-allowed">
+              <button type="submit" id="submitBtn" class="btn-send flex items-center gap-2 px-8 py-3 rounded-xl font-medium transition-all disabled:opacity-60 disabled:cursor-not-allowed">
                 <ion-icon name="paper-plane-outline" class="text-lg"></ion-icon>
                 <span>Send Message</span>
               </button>
@@ -518,28 +590,76 @@
 
   document.addEventListener('DOMContentLoaded', () => {
 
+    /* ============ 0. THEME SWITCHER ============ */
+    const root = document.documentElement;
+    const themes = [
+      { name: 'Cyber Blue',   dark: '#0f172a', card: '#1e293b', accent: '#38bdf8', rgb: '56, 189, 248' },
+      { name: 'Matrix Green', dark: '#0a0f0a', card: '#132018', accent: '#22c55e', rgb: '34, 197, 94' },
+      { name: 'Cyber Purple', dark: '#0f0a1e', card: '#1e1533', accent: '#a855f7', rgb: '168, 85, 247' },
+      { name: 'Warm Orange',  dark: '#1a0f0a', card: '#2b1810', accent: '#fb923c', rgb: '251, 146, 60' },
+      { name: 'Crimson Red',  dark: '#180a0a', card: '#2a1414', accent: '#ef4444', rgb: '239, 68, 68' },
+      { name: 'Rose Gold',    dark: '#1a0f14', card: '#2b1820', accent: '#f472b6', rgb: '244, 114, 182' },
+      { name: 'Amber',        dark: '#1a1408', card: '#2b2210', accent: '#fbbf24', rgb: '251, 191, 36' },
+      { name: 'Teal',         dark: '#08181a', card: '#10282b', accent: '#2dd4bf', rgb: '45, 212, 191' },
+    ];
+
+    const swatchContainer = document.getElementById('swatchContainer');
+    const themePanel = document.getElementById('themePanel');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+    function applyTheme(theme, btnEl) {
+      root.style.setProperty('--color-dark', theme.dark);
+      root.style.setProperty('--color-card', theme.card);
+      root.style.setProperty('--color-accent', theme.accent);
+      root.style.setProperty('--color-accent-rgb', theme.rgb);
+      // อัปเดตสถานะ selected บนสวอตช์
+      swatchContainer.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('selected'));
+      if (btnEl) btnEl.classList.add('selected');
+    }
+
+    // สร้างปุ่มสวอตช์สีแบบไดนามิก
+    themes.forEach((theme, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'swatch-btn' + (idx === 0 ? ' selected' : '');
+      btn.style.backgroundColor = theme.accent;
+      btn.setAttribute('aria-label', `เปลี่ยนธีมเป็น ${theme.name}`);
+      btn.title = theme.name;
+      btn.addEventListener('click', () => applyTheme(theme, btn));
+      swatchContainer.appendChild(btn);
+    });
+
+    themeToggleBtn.addEventListener('click', () => {
+      const isClosed = themePanel.classList.toggle('closed');
+      themeToggleBtn.setAttribute('aria-expanded', String(!isClosed));
+    });
+    // ปิด panel เมื่อคลิกนอกพื้นที่
+    document.addEventListener('click', (e) => {
+      if (!themePanel.contains(e.target) && !themeToggleBtn.contains(e.target)) {
+        themePanel.classList.add('closed');
+        themeToggleBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        themePanel.classList.add('closed');
+        themeToggleBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
     /* ============ 1. TAB NAVIGATION ============ */
     const navBtns = document.querySelectorAll('.nav-btn');
     const pageSections = document.querySelectorAll('.page-section');
 
     function activateSection(targetId) {
-      navBtns.forEach(b => {
-        b.classList.remove('text-tech-accent', 'border-tech-accent');
-        b.classList.add('text-slate-400', 'border-transparent');
-      });
-      navBtns.forEach(b => {
-        if (b.getAttribute('data-target') === targetId) {
-          b.classList.remove('text-slate-400', 'border-transparent');
-          b.classList.add('text-tech-accent', 'border-tech-accent');
-        }
-      });
+      navBtns.forEach(b => b.classList.remove('active-nav'));
+      navBtns.forEach(b => { if (b.getAttribute('data-target') === targetId) b.classList.add('active-nav'); });
 
       pageSections.forEach(s => s.classList.remove('active'));
       const target = document.getElementById(targetId);
       if (!target) return;
       target.classList.add('active');
 
-      // รีเซ็ต reveal animation ใน section ใหม่
       target.querySelectorAll('.reveal').forEach(el => {
         el.classList.remove('in-view');
         revealObserver.observe(el);
@@ -548,16 +668,12 @@
       if (targetId === 'resume') animateSkillBars();
       if (targetId === 'about') animateCounters();
 
-      if (window.innerWidth < 1024) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      if (window.innerWidth < 1024) window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    navBtns.forEach(btn => {
-      btn.addEventListener('click', function () {
-        activateSection(this.getAttribute('data-target'));
-      });
-    });
+    navBtns.forEach(btn => btn.addEventListener('click', function () {
+      activateSection(this.getAttribute('data-target'));
+    }));
 
     /* ============ 2. TYPING EFFECT ============ */
     const roles = ['System Security Engineer', 'Network Administrator', 'Virtualization Specialist', 'Automation Enthusiast'];
@@ -569,18 +685,11 @@
       if (!deleting) {
         typingEl.textContent = current.substring(0, charIndex + 1);
         charIndex++;
-        if (charIndex === current.length) {
-          deleting = true;
-          setTimeout(typeLoop, 1800);
-          return;
-        }
+        if (charIndex === current.length) { deleting = true; setTimeout(typeLoop, 1800); return; }
       } else {
         typingEl.textContent = current.substring(0, charIndex - 1);
         charIndex--;
-        if (charIndex === 0) {
-          deleting = false;
-          roleIndex = (roleIndex + 1) % roles.length;
-        }
+        if (charIndex === 0) { deleting = false; roleIndex = (roleIndex + 1) % roles.length; }
       }
       setTimeout(typeLoop, deleting ? 40 : 80);
     }
@@ -591,7 +700,7 @@
       document.querySelectorAll('#resume .skill-bar-fill').forEach(bar => bar.classList.add('animated'));
     }
 
-    /* ============ 4. STATS COUNTER ANIMATION ============ */
+    /* ============ 4. STATS COUNTER ============ */
     let countersAnimated = false;
     function animateCounters() {
       if (countersAnimated) return;
@@ -599,30 +708,20 @@
       document.querySelectorAll('[data-count]').forEach(el => {
         const target = parseInt(el.getAttribute('data-count'), 10);
         let current = 0;
-        const duration = 1200;
-        const stepTime = 16;
-        const steps = duration / stepTime;
-        const increment = target / steps;
+        const stepTime = 16, steps = 1200 / stepTime, increment = target / steps;
         const timer = setInterval(() => {
           current += increment;
-          if (current >= target) {
-            el.textContent = target;
-            clearInterval(timer);
-          } else {
-            el.textContent = Math.floor(current);
-          }
+          if (current >= target) { el.textContent = target; clearInterval(timer); }
+          else el.textContent = Math.floor(current);
         }, stepTime);
       });
     }
-    setTimeout(animateCounters, 300); // Trigger ครั้งแรกเพราะ About เป็น section เริ่มต้น
+    setTimeout(animateCounters, 300);
 
-    /* ============ 5. FADE-UP REVEAL ON SCROLL ============ */
+    /* ============ 5. FADE-UP REVEAL ============ */
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          revealObserver.unobserve(entry.target);
-        }
+        if (entry.isIntersecting) { entry.target.classList.add('in-view'); revealObserver.unobserve(entry.target); }
       });
     }, { threshold: 0.15 });
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
@@ -635,35 +734,29 @@
     const modalDesc = document.getElementById('modalDesc');
 
     function openModal(data) {
-      modalImg.src = data.img;
-      modalImg.alt = data.title;
+      modalImg.src = data.img; modalImg.alt = data.title;
       modalTitle.textContent = data.title;
       modalCategory.textContent = data.category;
       modalDesc.textContent = data.desc;
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      modal.classList.remove('hidden'); modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
     }
     function closeModal() {
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
+      modal.classList.add('hidden'); modal.classList.remove('flex');
       document.body.style.overflow = '';
     }
-
     document.querySelectorAll('.portfolio-item').forEach(item => {
-      item.addEventListener('click', () => {
-        openModal({
-          title: item.getAttribute('data-title'),
-          category: item.getAttribute('data-category'),
-          desc: item.getAttribute('data-desc'),
-          img: item.getAttribute('data-img')
-        });
-      });
+      item.addEventListener('click', () => openModal({
+        title: item.getAttribute('data-title'),
+        category: item.getAttribute('data-category'),
+        desc: item.getAttribute('data-desc'),
+        img: item.getAttribute('data-img')
+      }));
     });
     document.querySelectorAll('[data-close-modal]').forEach(el => el.addEventListener('click', closeModal));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-    /* ============ 7. TOAST NOTIFICATION ============ */
+    /* ============ 7. TOAST ============ */
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -671,32 +764,24 @@
       const icon = type === 'success' ? 'checkmark-circle-outline' : 'alert-circle-outline';
       toast.className = `toast ${bgColor} text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm font-medium`;
       toast.innerHTML = `<ion-icon name="${icon}" class="text-xl"></ion-icon><span></span>`;
-      toast.querySelector('span').textContent = message; // ใช้ textContent ป้องกัน XSS
+      toast.querySelector('span').textContent = message;
       container.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     }
 
-    /* ============ 8. CONTACT FORM VALIDATION ============ */
+    /* ============ 8. CONTACT FORM ============ */
     const contactForm = document.getElementById('contactForm');
     const submitBtn = document.getElementById('submitBtn');
 
     function validateField(id, condition) {
       const field = document.getElementById(id);
       const errorMsg = document.querySelector(`[data-error-for="${id}"]`);
-      if (!condition) {
-        field.classList.add('field-error');
-        errorMsg.classList.add('show');
-        return false;
-      } else {
-        field.classList.remove('field-error');
-        errorMsg.classList.remove('show');
-        return true;
-      }
+      if (!condition) { field.classList.add('field-error'); errorMsg.classList.add('show'); return false; }
+      field.classList.remove('field-error'); errorMsg.classList.remove('show'); return true;
     }
 
     contactForm.addEventListener('submit', (e) => {
-      e.preventDefault(); // ป้องกันการส่งฟอร์มออกไปจริงตามข้อจำกัดความปลอดภัยของแซนด์บ็อกซ์
-
+      e.preventDefault();
       const fullname = document.getElementById('fullname').value.trim();
       const email = document.getElementById('email').value.trim();
       const message = document.getElementById('message').value.trim();
@@ -728,7 +813,7 @@
     });
     backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    /* ============ 10. PRINT RESUME PDF (โหลดไฟล์ PDF จริงมาสั่งพิมพ์) ============ */
+    /* ============ 10. PRINT RESUME PDF ============ */
     const printBtn = document.getElementById('printBtn');
     const printBtnText = document.getElementById('printBtnText');
     const printIcon = document.getElementById('printIcon');
@@ -740,13 +825,10 @@
       printIcon.setAttribute('name', 'hourglass-outline');
       printBtnText.textContent = 'กำลังโหลด PDF...';
 
-      // สร้าง iframe ใหม่ทุกครั้งเพื่อโหลดไฟล์ PDF สด ๆ
       printFrameContainer.innerHTML = '';
       const iframe = document.createElement('iframe');
       iframe.setAttribute('title', 'Resume PDF for printing');
-      iframe.style.width = '0';
-      iframe.style.height = '0';
-      iframe.style.border = 'none';
+      iframe.style.width = '0'; iframe.style.height = '0'; iframe.style.border = 'none';
 
       let printed = false;
       const timeoutId = setTimeout(() => {
@@ -760,28 +842,20 @@
       iframe.onload = () => {
         printed = true;
         clearTimeout(timeoutId);
-        try {
-          // สั่งพิมพ์ไฟล์ PDF ที่โหลดอยู่ใน iframe (แทนที่จะพิมพ์หน้าเว็บ)
-          iframe.contentWindow.focus();
-          iframe.contentWindow.print();
-        } catch (err) {
-          showToast('เบราว์เซอร์ไม่รองรับการพิมพ์ PDF ในรูปแบบนี้ กรุณาดาวน์โหลดไฟล์แทน', 'error');
-        }
+        try { iframe.contentWindow.focus(); iframe.contentWindow.print(); }
+        catch (err) { showToast('เบราว์เซอร์ไม่รองรับการพิมพ์ PDF ในรูปแบบนี้ กรุณาดาวน์โหลดไฟล์แทน', 'error'); }
         resetPrintButton();
       };
-
       iframe.onerror = () => {
         clearTimeout(timeoutId);
         resetPrintButton();
         showToast('ไม่พบไฟล์ PDF กรุณาตรวจสอบพาธไฟล์', 'error');
       };
-
       function resetPrintButton() {
         printBtn.disabled = false;
         printIcon.setAttribute('name', 'print-outline');
         printBtnText.textContent = 'Print Resume';
       }
-
       iframe.src = RESUME_PDF_PATH;
       printFrameContainer.appendChild(iframe);
     });
